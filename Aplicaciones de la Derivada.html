@@ -1,0 +1,1505 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Aplicaciones de la Derivada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
+<style>
+/* Layout: cuaderno cuadriculado. Índice fijo a la izquierda (arriba en el teléfono), columna de lectura de ~70 caracteres.
+   Azul de bolígrafo para lo importante, rojo de corrector para los errores, resaltador amarillo para fórmulas clave. */
+:root{
+  --paper:#f6f7fb; --panel:#ffffff; --panel-2:#eef1f8; --ink:#1a2135; --ink-2:#4b546d; --ink-3:#7a8299;
+  --rule:#d8deea; --grid:rgba(39,71,184,.07);
+  --blue:#2747b8; --blue-soft:rgba(39,71,184,.09); --red:#c3302a; --red-soft:rgba(195,48,42,.08);
+  --green:#1d7a4e; --green-soft:rgba(29,122,78,.09); --hl:#ffe76a; --hl-soft:rgba(255,226,70,.55);
+  --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Literata", Georgia, "Times New Roman", serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --f-hand:"Caveat", "Comic Sans MS", cursive;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#11151e; --panel:#171c28; --panel-2:#1d2433; --ink:#e7eaf3; --ink-2:#aab2c6; --ink-3:#7d869c;
+    --rule:#2b3346; --grid:rgba(142,166,255,.06);
+    --blue:#93a9ff; --blue-soft:rgba(147,169,255,.12); --red:#ff8077; --red-soft:rgba(255,128,119,.1);
+    --green:#64d39c; --green-soft:rgba(100,211,156,.1); --hl:rgba(255,222,77,.85); --hl-soft:rgba(255,222,77,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#11151e; --panel:#171c28; --panel-2:#1d2433; --ink:#e7eaf3; --ink-2:#aab2c6; --ink-3:#7d869c;
+  --rule:#2b3346; --grid:rgba(142,166,255,.06);
+  --blue:#93a9ff; --blue-soft:rgba(147,169,255,.12); --red:#ff8077; --red-soft:rgba(255,128,119,.1);
+  --green:#64d39c; --green-soft:rgba(100,211,156,.1); --hl:rgba(255,222,77,.85); --hl-soft:rgba(255,222,77,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.65;margin:0}
+a{color:var(--blue)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:260px minmax(0,1fr);max-width:1180px;margin:0 auto;padding-inline:24px;gap:48px}
+.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;height:100vh;overflow:auto;padding-block:28px;display:flex;flex-direction:column;gap:18px}
+.toc-brand{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.toc nav{display:flex;flex-direction:column;gap:2px}
+.toc nav a{display:flex;align-items:baseline;gap:10px;padding:7px 10px;border-radius:8px;text-decoration:none;color:var(--ink-2);font-family:var(--f-display);font-size:15px;line-height:1.3}
+.toc nav a:hover{background:var(--panel-2);color:var(--ink)}
+.toc nav a.on{background:var(--blue-soft);color:var(--blue)}
+.toc nav a .n{font-family:var(--f-mono);font-size:12px;min-width:2.4em;color:var(--ink-3)}
+.toc nav a.on .n{color:var(--blue)}
+.toc nav a .c{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--ink-3)}
+.prog{background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius);padding:14px}
+.prog b{font-family:var(--f-display);font-size:22px}
+.prog small{display:block;font-family:var(--f-mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.03em}
+.bar{height:8px;border-radius:99px;background:var(--panel-2);overflow:hidden;margin-top:10px;display:flex}
+.bar i{display:block;height:100%;background:var(--green);transition:width .3s}
+.bar i.r{background:var(--red);opacity:.7}
+.prog .reset{margin-top:10px;background:none;border:0;padding:0;color:var(--ink-3);font-family:var(--f-mono);font-size:11px;text-decoration:underline;cursor:pointer}
+
+main{min-width:0;padding-block:28px 120px}
+section{max-width:760px;padding-top:24px}
+section + section{margin-top:56px;border-top:1px solid var(--rule);padding-top:56px}
+
+/* ---------- type ---------- */
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;line-height:1.12;margin:0;color:var(--ink)}
+h2{font-size:clamp(28px,4vw,38px);font-weight:800;letter-spacing:-.01em}
+h3{font-size:22px;font-weight:700;margin-top:40px}
+h4{font-size:17px;font-weight:700;margin-top:24px}
+p{margin:14px 0}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--blue);display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.eyebrow .sec{background:var(--blue);color:var(--paper);padding:2px 8px;border-radius:5px;letter-spacing:.04em}
+.idea{font-size:21px;line-height:1.5;margin:18px 0 6px;color:var(--ink)}
+.idea::before{content:"La idea";display:block;font-family:var(--f-hand);font-size:24px;color:var(--blue);line-height:1;margin-bottom:4px}
+.muted{color:var(--ink-2)}
+.small{font-size:15px}
+.hl{background:linear-gradient(transparent 52%,var(--hl-soft) 52%,var(--hl-soft) 92%,transparent 92%);padding:0 2px}
+.mono{font-family:var(--f-mono);font-size:.88em}
+ul,ol{padding-left:1.3em}
+li{margin:6px 0}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%;padding:2px 0}
+mjx-container{color:inherit}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:40px 0 8px;max-width:820px}
+.hero::before{content:"";position:absolute;inset:-28px -24px auto -24px;height:calc(100% + 28px);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent);pointer-events:none;z-index:-1}
+.hero h1{font-size:clamp(40px,7vw,72px);font-weight:800;letter-spacing:-.025em;line-height:.98;max-width:12ch}
+.hero .sub{font-size:19px;color:var(--ink-2);max-width:56ch;margin-top:18px}
+.hero-fig{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:end}
+.hero svg{width:100%;height:auto;max-width:300px}
+.hero svg .axis{stroke:var(--rule);stroke-width:1.5}
+.hero svg .curve{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.hero svg .tan{stroke:var(--blue);stroke-width:2;stroke-dasharray:5 4}
+.hero svg .dot{fill:var(--blue)}
+.hero svg .dot2{fill:var(--red)}
+.hero svg text{font-family:var(--f-hand);font-size:20px;fill:var(--blue)}
+.hero svg text.r{fill:var(--red)}
+
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:30px 0 8px;padding:0;list-style:none;counter-reset:how}
+.how li{margin:0;background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius);padding:14px 14px 14px;font-size:15px;line-height:1.45;counter-increment:how}
+.how li::before{content:counter(how);display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--paper);font-family:var(--f-mono);font-size:12px;margin-bottom:8px}
+.how b{display:block;font-family:var(--f-display);font-size:16px;margin-bottom:2px}
+
+/* ---------- tables ---------- */
+.tbl-wrap{overflow-x:auto;margin:18px 0;border:1px solid var(--rule);border-radius:var(--radius);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:15.5px}
+th,td{padding:10px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600;background:var(--panel-2)}
+td.k{font-family:var(--f-display);font-weight:700;white-space:nowrap}
+td .go{font-family:var(--f-mono);font-size:12px;color:var(--blue);text-decoration:none;white-space:nowrap}
+
+/* ---------- boxes ---------- */
+.key{position:relative;margin:22px 0;padding:18px 20px 14px;background:var(--panel);border:1.5px solid var(--ink);border-radius:var(--radius)}
+.key > .lbl{position:absolute;top:-13px;left:14px;font-family:var(--f-display);font-weight:700;font-size:13.5px;padding:1px 10px;background:var(--hl);color:#1a2135;border-radius:3px;transform:rotate(-1.2deg)}
+.key p:first-of-type{margin-top:6px}
+.rule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:18px 0}
+.rule-grid > div{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:10px 14px;font-size:15px}
+.rule-grid > div b{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+
+.ex{margin:26px 0;border-left:3px solid var(--blue);padding:4px 0 4px 20px}
+.ex > .t{font-family:var(--f-mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+.ex > .q{font-family:var(--f-display);font-size:18.5px;font-weight:600;line-height:1.4;margin:0 0 6px}
+.steps{list-style:none;padding:0;margin:12px 0 0;counter-reset:st;display:flex;flex-direction:column;gap:12px}
+.steps > li{margin:0;counter-increment:st;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px}
+.steps > li::before{content:counter(st);width:24px;height:24px;border-radius:50%;border:1.5px solid var(--blue);color:var(--blue);display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;margin-top:3px}
+.steps > li > div > p:first-child{margin-top:0}
+.steps > li > div > p:last-child{margin-bottom:0}
+.why{display:block;font-size:15px;color:var(--ink-2);margin-top:4px}
+.why::before{content:"¿Por qué? ";font-family:var(--f-hand);font-size:19px;color:var(--blue)}
+.ans{display:inline-block;margin-top:8px;padding:6px 12px;border-radius:7px;background:var(--green-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--green) 35%,transparent);font-size:15.5px}
+.ans::before{content:"Respuesta  ";font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-right:6px}
+
+/* errores: corrector rojo */
+.errs{display:flex;flex-direction:column;gap:12px;margin:18px 0}
+.err{background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius);padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 20px}
+.err > h4{grid-column:1/-1;margin:0 0 6px;font-size:16px}
+.err .no,.err .si{font-size:15px;line-height:1.55;min-width:0}
+.err .no::before,.err .si::before{display:block;font-family:var(--f-hand);font-size:21px;line-height:1.1;margin-bottom:2px}
+.err .no::before{content:"✗ Así no";color:var(--red)}
+.err .si::before{content:"✓ Así sí";color:var(--green)}
+.err .no{color:var(--ink-2)}
+.ojo-title{font-family:var(--f-hand);color:var(--red);font-size:30px;font-weight:600;margin-top:40px;line-height:1}
+
+/* práctica */
+.practice{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+.prob{background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius);padding:14px 16px 12px;transition:border-color .2s}
+.prob.ok{border-color:color-mix(in srgb,var(--green) 55%,var(--rule))}
+.prob.no{border-color:color-mix(in srgb,var(--red) 55%,var(--rule))}
+.prob .head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.tag{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;padding:2px 7px;border-radius:5px;background:var(--panel-2);color:var(--ink-2);white-space:nowrap}
+.prob .txt{flex:1 1 300px;min-width:0}
+.prob .txt p{margin:0}
+.prob-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+details.sol{flex:1 1 100%}
+details.sol summary{cursor:pointer;font-family:var(--f-mono);font-size:12.5px;color:var(--blue);list-style:none;display:inline-flex;gap:6px;align-items:center;padding:4px 0}
+details.sol summary::-webkit-details-marker{display:none}
+details.sol summary::before{content:"▸";transition:transform .2s}
+details.sol[open] summary::before{transform:rotate(90deg)}
+details.sol .body{margin-top:6px;padding:10px 14px;background:var(--panel-2);border-radius:8px;font-size:15.5px}
+details.sol .body p{margin:6px 0}
+.chk{display:flex;gap:6px}
+.chk button{font-family:var(--f-mono);font-size:12px;padding:5px 10px;border-radius:99px;border:1px solid var(--rule);background:transparent;color:var(--ink-2);cursor:pointer}
+.chk button:hover{border-color:var(--ink-3)}
+.chk button[aria-pressed="true"].y{background:var(--green);border-color:var(--green);color:var(--paper)}
+.chk button[aria-pressed="true"].n{background:var(--red);border-color:var(--red);color:var(--paper)}
+
+/* mapa de signos */
+.sm{margin:16px 0;padding:14px 16px 10px;background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius);overflow-x:auto}
+.sm-grid{display:grid;min-width:270px;align-items:center;row-gap:4px}
+.sm-grid > span{text-align:center;font-family:var(--f-mono);font-size:13px}
+.sm-name{font-family:var(--f-body)!important;font-style:italic;font-size:16px!important;text-align:left!important;color:var(--ink-2)}
+.sm .p{color:var(--green);font-size:20px!important;font-weight:600}
+.sm .m{color:var(--red);font-size:20px!important;font-weight:600}
+.sm .z{color:var(--ink-3)}
+.sm .x{color:var(--red)}
+.sm .axis{grid-column:2/-1;height:0;border-top:1.5px solid var(--ink-2);position:relative}
+.sm .tk{font-size:14px!important;color:var(--ink);font-weight:600}
+.sm .bh{font-family:var(--f-hand)!important;font-size:19px!important;color:var(--ink-2)}
+.sm .bh.up{color:var(--green)}
+.sm .bh.dn{color:var(--red)}
+.sm .bh.mx,.sm .bh.mn{color:var(--blue)}
+
+/* laboratorio */
+.lab{margin:22px 0;background:var(--panel);border:1.5px solid var(--ink);border-radius:var(--radius);overflow:hidden}
+.lab-top{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--rule)}
+.lab-top b{font-family:var(--f-display);font-size:16px}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button,.lab-jump button{font-family:var(--f-mono);font-size:12px;padding:5px 10px;border-radius:7px;border:1px solid var(--rule);background:var(--paper);color:var(--ink-2);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.lab canvas{display:block;width:100%;height:300px;background:var(--panel)}
+.lab-ctl{padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--rule)}
+.lab-ctl input[type=range]{width:100%;accent-color:var(--blue)}
+.lab-read{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.lab-read div{background:var(--panel-2);border-radius:8px;padding:8px 10px;font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums}
+.lab-read div small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.lab-read .state{font-family:var(--f-display);font-weight:700;font-size:15px}
+.lab-jump{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-family:var(--f-mono);font-size:12px;color:var(--ink-3)}
+
+/* quiz */
+.quiz{display:flex;flex-direction:column;gap:12px;margin:18px 0}
+.qz{background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius);padding:12px 16px}
+.qz .lim{font-size:17px}
+.qz .opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.qz .opts button{font-family:var(--f-mono);font-size:13px;padding:6px 11px;border-radius:7px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer;min-width:44px}
+.qz .opts button.right{background:var(--green);color:var(--paper);border-color:var(--green)}
+.qz .opts button.wrong{background:var(--red-soft);color:var(--red);border-color:var(--red);text-decoration:line-through}
+.qz .fb{font-size:15px;margin-top:8px;color:var(--ink-2)}
+.qz .fb:empty{display:none}
+.qscore{font-family:var(--f-mono);font-size:13px;color:var(--ink-2)}
+
+/* detector */
+.detect td:first-child{font-style:italic}
+
+/* simulacro */
+.timer{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0;padding:14px 16px;background:var(--ink);color:var(--paper);border-radius:var(--radius)}
+.timer .clock{font-family:var(--f-mono);font-size:28px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.timer button{font-family:var(--f-mono);font-size:12.5px;padding:7px 12px;border-radius:7px;border:1px solid color-mix(in srgb,var(--paper) 40%,transparent);background:transparent;color:var(--paper);cursor:pointer}
+.timer .note{font-size:14px;opacity:.8;flex:1 1 220px}
+.pts{font-family:var(--f-mono);font-size:11px;color:var(--ink-3);margin-left:auto}
+
+/* resumen */
+.cheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px;margin:20px 0}
+.cheat > div{background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius);padding:14px 16px;font-size:15px;min-width:0}
+.cheat h4{margin:0 0 6px;font-size:16px;display:flex;gap:8px;align-items:baseline}
+.cheat h4 .tag{font-weight:400}
+.cheat ul{margin:6px 0 0;padding-left:1.1em}
+.final{list-style:none;padding:0;display:grid;gap:8px}
+.final li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;margin:0}
+.final li::before{content:"☐";color:var(--blue);font-size:18px;line-height:1.4}
+
+footer{max-width:760px;margin-top:60px;padding-top:20px;border-top:1px solid var(--rule);font-size:14px;color:var(--ink-3)}
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0;padding-inline:16px}
+  .toc{position:sticky;top:env(safe-area-inset-top,0px);height:auto;z-index:20;background:var(--paper);padding-block:10px;margin-inline:-16px;padding-inline:16px;border-bottom:1px solid var(--rule);flex-direction:row;align-items:center;gap:12px;overflow:visible}
+  .toc-brand{display:none}
+  .toc nav{flex-direction:row;overflow-x:auto;gap:4px;scrollbar-width:none;flex:1;min-width:0}
+  .toc nav::-webkit-scrollbar{display:none}
+  .toc nav a{white-space:nowrap;padding:6px 10px;font-size:14px}
+  .toc nav a .c,.toc nav a .full{display:none}
+  .toc nav a .n{min-width:0}
+  .prog{padding:6px 10px;flex:0 0 auto;display:flex;align-items:center;gap:8px}
+  .prog b{font-size:15px}
+  .prog small,.prog .bar,.prog .reset{display:none}
+  .hero::before{inset:-28px -16px auto -16px}
+  .hero-fig{grid-template-columns:minmax(0,1fr)}
+  .hero svg{max-width:260px}
+  html{scroll-padding-top:64px}
+}
+@media (max-width: 560px){
+  body{font-size:16px}
+  .err{grid-template-columns:minmax(0,1fr)}
+  .idea{font-size:19px}
+  .ex{padding-left:14px}
+  mjx-container[display="true"] > svg{max-width:100%;height:auto}
+  .sm .bh{font-size:17px!important}
+  .steps > li{grid-template-columns:24px minmax(0,1fr);gap:8px}
+}
+</style>
+
+<div class="shell">
+  <aside class="toc" aria-label="Índice">
+    <div class="toc-brand">Cálculo para Administración · Cap. 3</div>
+    <nav id="tocnav">
+      <a href="#inicio"><span class="n">00</span><span class="full">Antes de empezar</span></a>
+      <a href="#repaso"><span class="n">↺</span>Repaso de derivadas</a>
+      <a href="#s31" data-sec="s31"><span class="n">3.1</span>Razón de cambio<span class="c"></span></a>
+      <a href="#s32" data-sec="s32"><span class="n">3.2</span>L’Hôpital<span class="c"></span></a>
+      <a href="#s33" data-sec="s33"><span class="n">3.3</span>Crece o decrece<span class="c"></span></a>
+      <a href="#s34" data-sec="s34"><span class="n">3.4</span>Máximos y mínimos<span class="c"></span></a>
+      <a href="#s35" data-sec="s35"><span class="n">3.5</span>Optimización<span class="c"></span></a>
+      <a href="#s36" data-sec="s36"><span class="n">3.6</span>Interés continuo<span class="c"></span></a>
+      <a href="#simulacro" data-sec="sim"><span class="n">✎</span>Simulacro<span class="c"></span></a>
+      <a href="#resumen"><span class="n">★</span>Hoja resumen</a>
+    </nav>
+    <div class="prog" aria-live="polite">
+      <b id="pg-num">0</b>
+      <small id="pg-txt">de 0 ejercicios dominados</small>
+      <div class="bar" aria-hidden="true"><i id="pg-ok" style="width:0"></i><i id="pg-no" class="r" style="width:0"></i></div>
+      <button class="reset" id="pg-reset" type="button">Borrar mi progreso</button>
+    </div>
+  </aside>
+
+  <main>
+  <!-- ====================== INICIO ====================== -->
+  <section id="inicio" class="hero" style="padding-top:24px">
+    <div class="hero-fig">
+      <div>
+        <div class="eyebrow">Guía de estudio · Capítulo 3 · Acuña (2025)</div>
+        <h1>Aplicaciones de la derivada</h1>
+        <p class="sub">Todo el capítulo sale de una sola idea: <span class="hl">la derivada mide qué tan rápido cambia algo</span>. Con eso se calcula el costo de la siguiente unidad, se resuelven límites raros, se sabe dónde una función sube o baja y se encuentra el precio que deja más ganancia.</p>
+      </div>
+      <svg viewBox="-6 -6 372 212" role="img" aria-label="Curva con un máximo y un mínimo; en la cima la tangente es horizontal">
+        <line class="axis" x1="0" y1="76.2" x2="360" y2="76.2"/>
+        <path class="curve" d="M0.0,97.6 L4.5,87.9 L9.0,79.1 L13.5,71.0 L18.0,63.7 L22.5,57.2 L27.0,51.4 L31.5,46.3 L36.0,42.0 L40.5,38.2 L45.0,35.2 L49.5,32.7 L54.0,30.8 L58.5,29.5 L63.0,28.8 L67.5,28.6 L72.0,28.9 L76.5,29.6 L81.0,30.8 L85.5,32.5 L90.0,34.5 L94.5,36.9 L99.0,39.7 L103.5,42.9 L108.0,46.3 L112.5,50.0 L117.0,54.0 L121.5,58.2 L126.0,62.7 L130.5,67.3 L135.0,72.2 L139.5,77.1 L144.0,82.2 L148.5,87.4 L153.0,92.7 L157.5,98.0 L162.0,103.3 L166.5,108.7 L171.0,114.0 L175.5,119.3 L180.0,124.6 L184.5,129.7 L189.0,134.7 L193.5,139.6 L198.0,144.4 L202.5,148.9 L207.0,153.3 L211.5,157.4 L216.0,161.3 L220.5,164.9 L225.0,168.2 L229.5,171.1 L234.0,173.8 L238.5,176.0 L243.0,177.9 L247.5,179.3 L252.0,180.3 L256.5,180.9 L261.0,180.9 L265.5,180.4 L270.0,179.5 L274.5,177.9 L279.0,175.8 L283.5,173.0 L288.0,169.6 L292.5,165.6 L297.0,160.9 L301.5,155.5 L306.0,149.4 L310.5,142.5 L315.0,134.9 L319.5,126.4 L324.0,117.2 L328.5,107.1 L333.0,96.1 L337.5,84.3 L342.0,71.5 L346.5,57.8 L351.0,43.1 L355.5,27.5 L360.0,10.9"/>
+        <line class="tan" x1="20" y1="28.6" x2="115" y2="28.6"/>
+        <line class="tan" x1="212" y1="180.9" x2="306" y2="180.9" style="stroke:var(--red)"/>
+        <circle class="dot" cx="67.2" cy="28.6" r="5"/>
+        <circle class="dot2" cx="259.2" cy="180.9" r="5"/>
+        <text x="96" y="16">f′ = 0 → máximo</text>
+        <text class="r" x="150" y="204">f′ = 0 → mínimo</text>
+      </svg>
+    </div>
+
+    <ol class="how" aria-label="Cómo usar esta guía">
+      <li><b>Lea la idea</b>Cada sección empieza con la idea en una frase. Si entiende esa frase, ya tiene la mitad.</li>
+      <li><b>Copie el ejemplo</b>Haga el ejemplo resuelto con lápiz y papel, paso por paso, sin saltarse nada.</li>
+      <li><b>Lea los errores</b>Ahí se pierden la mayoría de los puntos en el examen. Son cortos.</li>
+      <li><b>Practique</b>Intente cada ejercicio antes de abrir la solución. Márquelo como “Me salió” o “Repasar”.</li>
+      <li><b>Simulacro</b>Al final, haga el examen de práctica con el cronómetro.</li>
+    </ol>
+
+    <h3>Detector de problemas: ¿qué me están pidiendo?</h3>
+    <p class="muted small">En el examen, lo más difícil suele ser reconocer qué tipo de problema es. Busque estas palabras.</p>
+    <div class="tbl-wrap detect">
+      <table>
+        <thead><tr><th>Si el enunciado dice…</th><th>Es de</th><th>Herramienta</th></tr></thead>
+        <tbody>
+          <tr><td>“costo marginal”, “costo aproximado de la unidad número 101”, “a qué tasa cambia”</td><td><a class="go" href="#s31">3.1</a></td><td>Derivar y evaluar</td></tr>
+          <tr><td>“calcule el límite” y al sustituir da \(\tfrac00\), \(\tfrac{\infty}{\infty}\), \(0\cdot\infty\), \(1^\infty\)…</td><td><a class="go" href="#s32">3.2</a></td><td>Regla de L’Hôpital</td></tr>
+          <tr><td>“intervalos donde la función es creciente o decreciente”</td><td><a class="go" href="#s33">3.3</a></td><td>Mapa de signos de \(f'\)</td></tr>
+          <tr><td>“extremos locales”, “máximos y mínimos relativos”, “puntos críticos”</td><td><a class="go" href="#s34">3.4</a></td><td>Criterio de la 1.ª o 2.ª derivada</td></tr>
+          <tr><td>“extremos absolutos en \([a,b]\)”</td><td><a class="go" href="#s34-abs">3.4.3</a></td><td>Tabla: críticos + bordes</td></tr>
+          <tr><td>“maximizar la utilidad”, “qué precio”, “qué dimensiones”, “minimizar el costo”, “tamaño del pedido”</td><td><a class="go" href="#s35">3.5</a></td><td>Receta de 6 pasos</td></tr>
+          <tr><td>“compuesto continuamente”, “tasa efectiva anual”</td><td><a class="go" href="#s36">3.6</a></td><td>\(A = Pe^{rt}\)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ====================== REPASO ====================== -->
+  <section id="repaso">
+    <div class="eyebrow"><span class="sec">Base</span>Viene del capítulo 2</div>
+    <h2>Repaso exprés de derivadas</h2>
+    <p>Todo el capítulo 3 es <em>usar</em> derivadas. Si derivar le cuesta, este es el primer lugar donde se pierden puntos. Estas son las únicas reglas que va a necesitar.</p>
+    <div class="rule-grid">
+      <div><b>Constante</b>\((c)' = 0\)</div>
+      <div><b>Potencia</b>\((x^n)' = n\,x^{n-1}\)</div>
+      <div><b>Exponencial</b>\((e^x)' = e^x\) &nbsp; \((e^{u})' = e^{u}\cdot u'\)</div>
+      <div><b>Logaritmo</b>\((\ln x)' = \dfrac1x\) &nbsp; \((\ln u)' = \dfrac{u'}{u}\)</div>
+      <div><b>Producto</b>\((uv)' = u'v + uv'\)</div>
+      <div><b>Cociente</b>\(\left(\dfrac uv\right)' \) \(= \dfrac{u'v - uv'}{v^2}\)</div>
+      <div><b>Cadena</b>\(\big[f(g(x))\big]' \) \(= f'(g(x))\cdot g'(x)\)</div>
+      <div><b>Otra base</b>\((a^x)' = a^x \ln a\)</div>
+    </div>
+    <div class="key"><span class="lbl">Truco que ahorra errores</span>
+      <p>Antes de derivar, pase raíces y fracciones a potencias:</p>
+      \[\sqrt{x}=x^{1/2}\qquad \sqrt[3]{x}=x^{1/3}\]\[\frac{800}{q}=800\,q^{-1}\qquad \frac{1}{x^2}=x^{-2}\]
+      <p class="small muted">Así casi todo se deriva con la regla de la potencia, sin usar la del cociente.</p>
+    </div>
+  </section>
+
+  <!-- ====================== 3.1 ====================== -->
+  <section id="s31">
+    <div class="eyebrow"><span class="sec">3.1</span>Páginas 57–60 del libro</div>
+    <h2>La derivada como razón de cambio</h2>
+    <p class="idea">Si una función mide dinero, su derivada le dice cuánto cambia ese dinero al producir <span class="hl">una unidad más</span>.</p>
+
+    <p>A esa derivada se le pone el apellido <strong>marginal</strong>. “Marginal” solo quiere decir “de la siguiente unidad”.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Función</th><th>Su derivada</th><th>Qué significa</th></tr></thead>
+        <tbody>
+          <tr><td>\(C(q)\) costo total</td><td>\(C'(q)\) costo marginal</td><td>Costo aproximado de producir la unidad \(q+1\)</td></tr>
+          <tr><td>\(I(q)\) ingreso</td><td>\(I'(q)\) ingreso marginal</td><td>Ingreso aproximado que deja la unidad \(q+1\)</td></tr>
+          <tr><td>\(U(q)\) utilidad</td><td>\(U'(q)\) utilidad marginal</td><td>Ganancia aproximada de la unidad \(q+1\)</td></tr>
+          <tr><td>\(\bar C(q)=\dfrac{C(q)}{q}\) costo promedio</td><td>\(\bar C'(q)\) costo promedio marginal</td><td>Cuánto sube o baja el costo <em>por unidad</em> al producir una más</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="key"><span class="lbl">Fórmulas que siempre se usan</span>
+      \[I = p\cdot q \qquad\quad \bar C = \frac{C}{q}\]\[U = I - C = pq - C\]
+      <p class="small muted">\(p\) = precio por unidad, \(q\) = cantidad. Lo mismo para \(\bar I = I/q\) y \(\bar U = U/q\).</p>
+    </div>
+
+    <h3>¿Por qué “unidad \(q+1\)”?</h3>
+    <p>Suponga que una fábrica ya produce 100 unidades y \(C'(100)=16\). Eso dice que, estando en 100, el costo está subiendo a razón de 16 por cada unidad. Entonces la <strong>unidad número 101</strong> cuesta más o menos 16. No es exacto, pero se acerca mucho (abajo lo comprobamos).</p>
+    <p><span class="hl">Regla práctica:</span> para el costo de la unidad número \(N\), evalúe en \(N-1\). El libro lo hace así: “el refrigerador número 183 costará aprox. \(C'(182)\)”.</p>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 1</div>
+      <p class="q">El costo de producir \(q\) unidades es \(C(q)=500+12q+0.02q^2\). Se venden a \(p=40\) cada una.</p>
+      <ol class="steps">
+        <li><div><p><strong>Costo marginal.</strong> Derive término por término:</p>
+          \[C'(q) = 0 + 12 + 0.04q = 12 + 0.04q\]</div></li>
+        <li><div><p><strong>Costo aproximado de la unidad 101.</strong> Evalúe en 100:</p>
+          \[C'(100) = 12 + 0.04(100) = 16\]
+          <p>Interpretación: <em>producir la unidad número 101 cuesta aproximadamente 16.</em></p>
+          <span class="why">El costo exacto es \(C(101)-C(100)=16.02\). La derivada dio 16: casi igual y mucho más fácil de calcular.</span></div></li>
+        <li><div><p><strong>Costo promedio.</strong> Divida todo entre \(q\) y simplifique <em>antes</em> de derivar:</p>
+          \[\begin{aligned}\bar C(q) &= \frac{500+12q+0.02q^2}{q}\\ &= 500q^{-1} + 12 + 0.02q\end{aligned}\]</div></li>
+        <li><div><p><strong>Costo promedio marginal.</strong> Ahora sí, derive:</p>
+          \[\bar C'(q) = -500q^{-2} + 0.02\]\[\bar C'(100) = -\frac{500}{10\,000}+0.02 = -0.03\]
+          <p>Interpretación: <em>al producir la unidad 101, el costo promedio baja unos 0.03 por unidad.</em> (Negativo = baja.)</p></div></li>
+        <li><div><p><strong>Utilidad y utilidad marginal</strong> con \(p=40\). Ojo con el paréntesis:</p>
+          \[\begin{aligned}U &= 40q - (500+12q+0.02q^2)\\ &= -0.02q^2 + 28q - 500\end{aligned}\]
+          \[U'(q) = -0.04q + 28 \quad\Rightarrow\quad U'(100) = 24\]
+          <p>La unidad 101 deja una ganancia aproximada de 24.</p></div></li>
+      </ol>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 2 · otra “razón de cambio”</div>
+      <p class="q">La demanda de un producto es \(q = 8000 - 40\sqrt{p}\). ¿A qué tasa cambia la demanda cuando el precio es \(p=100\)?</p>
+      <ol class="steps">
+        <li><div><p>Pase la raíz a potencia y derive respecto a \(p\):</p>
+          \[q = 8000 - 40p^{1/2}\]\[q'(p) = -40\cdot\tfrac12 p^{-1/2} = -\frac{20}{\sqrt p}\]</div></li>
+        <li><div>\[q'(100) = -\frac{20}{10} = -2\]
+          <p>Cuando el precio está en 100, por cada colón que sube el precio se venden unas <strong>2 unidades menos</strong>.</p>
+          <span class="why">“Tasa de cambio de A respecto a B” siempre es la derivada de A con respecto a B. El signo dice si sube (+) o baja (−).</span></div></li>
+      </ol>
+    </div>
+
+    <p class="ojo-title">¡Ojo! Errores comunes</p>
+    <div class="errs">
+      <div class="err"><h4>Sacar el costo promedio marginal dividiendo el costo marginal entre q</h4>
+        <div class="no">\(\bar C'(100) \) \(= \dfrac{C'(100)}{100}\) \(= \dfrac{16}{100}\) \(= 0.16\)</div>
+        <div class="si">Primero arme \(\bar C = C/q\), simplifique y luego derive: \(\bar C'(100) = -0.03\). El libro lo dice así: es la derivada del promedio, no el promedio de la derivada.</div></div>
+      <div class="err"><h4>Evaluar en el número equivocado</h4>
+        <div class="no">“Costo de la unidad 101” → \(C'(101)\)</div>
+        <div class="si">Unidad número \(N\) → \(C'(N-1)\). La unidad 101 → \(C'(100)\).</div></div>
+      <div class="err"><h4>Confundir el costo total con el marginal</h4>
+        <div class="no">“El costo de la unidad 101 es \(C(100)=1900\)”</div>
+        <div class="si">\(C(100)\) es lo que cuestan <em>las 100 juntas</em>. \(C'(100)\) es lo que cuesta, aproximadamente, <em>una más</em>.</div></div>
+      <div class="err"><h4>Perder el paréntesis en la utilidad</h4>
+        <div class="no">\(U \) \(= 40q - 500 + 12q + 0.02q^2\)</div>
+        <div class="si">\(U \) \(= 40q - (500+12q+0.02q^2)\) \(= 40q - 500 - 12q - 0.02q^2\). El menos cambia el signo de <em>todo</em> el costo.</div></div>
+      <div class="err"><h4>Le dan el costo promedio y piden el costo marginal</h4>
+        <div class="no">Derivar \(\bar C\) y decir que eso es \(C'\).</div>
+        <div class="si">Recupere el costo total: \(C = q\cdot \bar C\). Luego derive. (Ejercicios 7 y 8 del libro.)</div></div>
+    </div>
+
+    <h3>Práctica 3.1</h3>
+    <div class="practice" data-sec="s31">
+      <div class="prob" data-id="p31-2"><div class="head"><span class="tag">Libro #2</span><div class="txt"><p>Calcule el costo marginal y su valor: \(C = 0.4q^2+2.4q+960\); \(q = 2.8\).</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(C' = 0.8q + 2.4\)</p><p>\(C'(2.8) \) \(= 0.8(2.8)+2.4 = 4.64\)</p></div></details></div></div>
+      <div class="prob" data-id="p31-4"><div class="head"><span class="tag">Libro #4</span><div class="txt"><p>\(C \) \(= 0.02q^3-0.5q^2+4q+7250\); \(q=30\).</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(C' = 0.06q^2 - q + 4\)</p><p>\(C'(30) \) \(= 0.06(900) - 30 + 4\) \(= 54 - 30 + 4 = 28\)</p></div></details></div></div>
+      <div class="prob" data-id="p31-6"><div class="head"><span class="tag">Libro #6</span><div class="txt"><p>Calcule el costo marginal y el costo promedio marginal de \(C = 0.1q^2+3q+2\).</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(C' = 0.2q + 3\)</p><p>\(\bar C \) \(= 0.1q + 3 + 2q^{-1}\\) \(\Rightarrow\ \bar C'\) \(= 0.1 - 2q^{-2}\)</p></div></details></div></div>
+      <div class="prob" data-id="p31-7"><div class="head"><span class="tag">Libro #7</span><div class="txt"><p>Ahora le dan el <em>promedio</em>: \(\bar C \) \(= 0.02q + 9 + 800/q\). Calcule \(C'\) y \(\bar C'\).</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>Costo total: \(C = q\bar C \) \(= 0.02q^2 + 9q + 800\\) \(\Rightarrow\ C'\) \(= 0.04q + 9\)</p><p>\(\bar C \) \(= 0.02q + 9 + 800q^{-1}\\) \(\Rightarrow\ \bar C'\) \(= 0.02 - 800q^{-2}\)</p></div></details></div></div>
+      <div class="prob" data-id="p31-11"><div class="head"><span class="tag">Libro #11</span><div class="txt"><p>Calcule la utilidad marginal y la utilidad promedio marginal: \(C = 0.4q^2+2.4q+960\); \(p = 50\).</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(U \) \(= 50q - (0.4q^2+2.4q+960)\) \(= -0.4q^2 + 47.6q - 960\)</p><p>\(U' = 47.6 - 0.8q\)</p><p>\(\bar U \) \(= -0.4q + 47.6 - 960q^{-1}\\) \(\Rightarrow\ \bar U'\) \(= -0.4 + 960q^{-2}\)</p></div></details></div></div>
+      <div class="prob" data-id="p31-15"><div class="head"><span class="tag">Libro #15</span><div class="txt"><p>El costo semanal de producir \(x\) refrigeradores es \(C(x)=8000+200x-0.2x^2\). (a) Aproxime el costo del refrigerador número 183. (b) Si se venden a $260, estime la utilidad del refrigerador número 212.</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>(a) \(C'(x) = 200 - 0.4x\). El número 183 → \(C'(182) = 200 - 72.8 \) \(= 127.2\) dólares.</p><p>(b) \(U \) \(= 260x - (8000+200x-0.2x^2)\) \(= 0.2x^2 + 60x - 8000\). \(U' = 0.4x + 60\). El número 212 → \(U'(211) = 84.4 + 60 \) \(= 144.4\) dólares.</p></div></details></div></div>
+      <div class="prob" data-id="p31-17"><div class="head"><span class="tag">Libro #17</span><div class="txt"><p>La demanda mensual es \(q \) \(= 375\,000 - 2500\ln(0.01p)\). ¿A qué tasa disminuye la demanda por cada dólar de aumento cuando \(p = 40\)?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\((\ln u)' = u'/u\): \(q' \) \(= -2500\cdot\dfrac{0.01}{0.01p}\) \(= -\dfrac{2500}{p}\).</p><p>\(q'(40) = -62.5\): con el precio en $40, la demanda baja 62.5 unidades por cada dólar de aumento.</p></div></details></div></div>
+      <div class="prob" data-id="p31-18"><div class="head"><span class="tag">Libro #18</span><div class="txt"><p>Un tanque se vacía y el volumen a los \(t\) minutos es \(V = 5000(1-t/30)^2\), con \(0\le t\le30\). Calcule \(V'(12)\) e interprete.</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>Regla de la cadena: \(V' \) \(= 2\cdot5000(1-t/30)\cdot\left(-\tfrac1{30}\right)\) \(= -\tfrac{1000}{3}(1-t/30)\).</p><p>\(V'(12) \) \(= -\tfrac{1000}{3}(0.6)\) \(= -200\): a los 12 minutos el agua sale a 200 litros por minuto. El flujo es mayor en \(t=0\).</p></div></details></div></div>
+    </div>
+  </section>
+
+  <!-- ====================== 3.2 ====================== -->
+  <section id="s32">
+    <div class="eyebrow"><span class="sec">3.2</span>Páginas 60–67 del libro</div>
+    <h2>La regla de L’Hôpital</h2>
+    <p class="idea">Cuando un límite da \(\tfrac00\) o \(\tfrac\infty\infty\), derive <span class="hl">el de arriba y el de abajo por separado</span> y vuelva a sustituir.</p>
+
+    <div class="key"><span class="lbl">Teorema</span>
+      <p>Si \(\displaystyle\lim_{x\to a}\frac{f(x)}{g(x)}\) da \(\dfrac00\) o \(\dfrac{\pm\infty}{\pm\infty}\) (con \(a\) un número, \(\infty\) o \(-\infty\)), entonces</p>
+      \[\lim_{x\to a}\frac{f(x)}{g(x)} \;\LH\; \lim_{x\to a}\frac{f'(x)}{g'(x)}\]
+    </div>
+
+    <h3>¿Qué es “indeterminado” y qué no?</h3>
+    <p>Solo hay siete formas indeterminadas. Todo lo demás tiene respuesta directa, y ahí <strong>no</strong> se usa L’Hôpital.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Indeterminadas (hay que trabajar)</th><th>No indeterminadas (ya tienen respuesta)</th></tr></thead>
+        <tbody>
+          <tr><td>\(\dfrac00,\) \(\dfrac\infty\infty\)</td><td>\(\dfrac{0}{5}\) \(=0,\dfrac{5}{\infty}\) \(=0,\dfrac{5}{0}\) \(\to\pm\infty,\dfrac{\infty}{5}\) \(=\infty\)</td></tr>
+          <tr><td>\(0\cdot\infty\)</td><td>\(\infty\cdot\infty \) \(= \infty,5\cdot\infty\) \(=\infty\)</td></tr>
+          <tr><td>\(\infty-\infty\)</td><td>\(\infty+\infty\) \(=\infty,-\infty-\infty\) \(=-\infty\)</td></tr>
+          <tr><td>\(1^\infty,\ 0^0,\ \infty^0\)</td><td>\(0^\infty = 0,\) \(\infty^\infty\) \(=\infty,\quad   2^\infty\) \(=\infty,\quad   (0.5)^\infty\) \(= 0\)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="key"><span class="lbl">Receta</span>
+      <ol style="margin:6px 0 4px">
+        <li><strong>Sustituya</strong> el valor. Si sale un número, ese es el límite. Terminó.</li>
+        <li>Si sale \(\tfrac00\) o \(\tfrac\infty\infty\): derive numerador y denominador <em>por separado</em>.</li>
+        <li>Sustituya otra vez. Si sigue indeterminado, repita.</li>
+        <li>Si es otra forma (\(0\cdot\infty\), \(\infty-\infty\), potencias), primero conviértala con la tabla de abajo.</li>
+        <li>Antes de lanzarse, pregúntese si se resuelve más fácil con álgebra (factorizar, término principal). El libro insiste en esto.</li>
+      </ol>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Si la forma es…</th><th>Haga esto</th></tr></thead>
+        <tbody>
+          <tr><td class="k">\(\tfrac00,\) \(\tfrac\infty\infty\)</td><td>L’Hôpital directo</td></tr>
+          <tr><td class="k">\(0\cdot\infty\)</td><td>Escriba \(u\cdot v\) como \(\dfrac{u}{v^{-1}}\) o \(\dfrac{v}{u^{-1}}\) (escoja la que deje derivadas más sencillas; deje el \(\ln\) arriba)</td></tr>
+          <tr><td class="k">\(\infty-\infty\)</td><td>Factorice: \(u-v \) \(= u\left(1-\dfrac vu\right)\). Si son fracciones, también sirve sacar común denominador</td></tr>
+          <tr><td class="k">\(1^\infty,\ 0^0,\ \infty^0\)</td><td>Llame \(L\) al límite, calcule \(\ln L\) (el exponente baja a multiplicar) y al final \(L=e^{\ln L}\)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.2.1 · Las formas 0/0 e ∞/∞</h3>
+    <div class="ex">
+      <div class="t">Ejemplo resuelto · forma 0/0</div>
+      <p class="q">\(\displaystyle\lim_{x\to2}\frac{x^3-8}{x^2-4}\)</p>
+      <ol class="steps">
+        <li><div><p>Sustituya: \(\dfrac{8-8}{4-4}=\dfrac00\). Es indeterminado, se puede usar L’Hôpital.</p></div></li>
+        <li><div>\[\lim_{x\to2}\frac{x^3-8}{x^2-4}\;\LH\;\lim_{x\to2}\frac{3x^2}{2x} = \frac{12}{4} = 3\]
+          <span class="why">Con álgebra también sale: \(\dfrac{(x-2)(x^2+2x+4)}{(x-2)(x+2)} \) \(= \dfrac{x^2+2x+4}{x+2}\) \(\to\dfrac{12}{4}=3\). Si el examen no especifica método, use el que le salga más seguro.</span></div></li>
+      </ol>
+      <span class="ans">\(3\)</span>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto · forma ∞/∞, aplicando la regla dos veces</div>
+      <p class="q">\(\displaystyle\lim_{x\to\infty}\frac{x^2}{e^x}\)</p>
+      <ol class="steps">
+        <li><div><p>Sustituya: \(\dfrac\infty\infty\).</p></div></li>
+        <li><div>\[\begin{aligned}\lim_{x\to\infty}\frac{x^2}{e^x}\;&\LH\;\lim_{x\to\infty}\frac{2x}{e^x}\quad\left(\text{otra vez }\tfrac\infty\infty\right)\\ &\LH\;\lim_{x\to\infty}\frac{2}{e^x} = \frac{2}{\infty}=0\end{aligned}\]</div></li>
+      </ol>
+      <span class="ans">\(0\)</span>
+      <p class="small"><strong>Atajo para comprobar:</strong> cuando \(x\to\infty\), la exponencial le gana a cualquier potencia y cualquier potencia le gana al logaritmo: \(\ln x \ll x^n \ll e^x\). Por eso \(\tfrac{x^2}{e^x}\to0\) y \(\tfrac{\ln x}{x}\to0\).</p>
+    </div>
+
+    <h3>3.2.2 · La forma 0 · ∞</h3>
+    <div class="ex">
+      <div class="t">Ejemplo resuelto</div>
+      <p class="q">\(\displaystyle\lim_{x\to0^+} x^2\ln x\)</p>
+      <ol class="steps">
+        <li><div><p>Sustituya: \(x^2\to0\) y \(\ln x\to-\infty\). Forma \(0\cdot\infty\) (el signo no importa para la forma).</p></div></li>
+        <li><div><p>Convierta a fracción. Deje el \(\ln\) arriba y baje \(x^2\) como \(x^{-2}\):</p>
+          \[x^2\ln x = \frac{\ln x}{x^{-2}}\qquad\left(\text{forma }\tfrac{-\infty}{\infty}\right)\]</div></li>
+        <li><div>\[\begin{aligned}\lim_{x\to0^+}\frac{\ln x}{x^{-2}}\;&\LH\;\lim_{x\to0^+}\frac{1/x}{-2x^{-3}} = \lim_{x\to0^+}\frac{x^{-1}}{-2x^{-3}}\\ &= \lim_{x\to0^+}\frac{-x^{2}}{2} = 0\end{aligned}\]
+          <span class="why">Después de derivar, <em>simplifique</em> restando exponentes. Si sigue aplicando L’Hôpital sin simplificar, entra en un ciclo que nunca termina (el libro lo muestra en la página 64).</span></div></li>
+      </ol>
+      <span class="ans">\(0\)</span>
+    </div>
+
+    <h3>3.2.3 · La forma ∞ − ∞</h3>
+    <div class="ex">
+      <div class="t">Ejemplo resuelto · factorizando</div>
+      <p class="q">\(\displaystyle\lim_{x\to\infty}\left(x^2-e^x\right)\)</p>
+      <ol class="steps">
+        <li><div><p>Forma \(\infty-\infty\). Saque \(x^2\) como factor común:</p>
+          \[x^2-e^x = x^2\left(1-\frac{e^x}{x^2}\right)\]</div></li>
+        <li><div><p>Aparte, calcule el pedacito:</p>
+          \[\lim_{x\to\infty}\frac{e^x}{x^2}\;\LH\;\lim\frac{e^x}{2x}\;\LH\;\lim\frac{e^x}{2}=\infty\]</div></li>
+        <li><div><p>Regrese: \(\ \infty\cdot(1-\infty) \) \(= \infty\cdot(-\infty)\) \(= -\infty\).</p></div></li>
+      </ol>
+      <span class="ans">\(-\infty\)</span>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto · resta de fracciones (común denominador)</div>
+      <p class="q">\(\displaystyle\lim_{x\to1}\left(\frac1{\ln x}-\frac1{x-1}\right)\)</p>
+      <ol class="steps">
+        <li><div><p>Forma \(\infty-\infty\). Cuando son dos fracciones, lo más cómodo es sumar con común denominador:</p>
+          \[\frac1{\ln x}-\frac1{x-1} = \frac{(x-1)-\ln x}{(x-1)\ln x}\qquad\left(\tfrac00\right)\]</div></li>
+        <li><div>\[\LH\;\frac{1-\frac1x}{\ln x + \frac{x-1}{x}}\]<p>Multiplique arriba y abajo por \(x\) para quitar las fracciones pequeñas:</p>\[\frac{x-1}{x\ln x + x - 1}\qquad\left(\text{otra vez }\tfrac00\right)\]</div></li>
+        <li><div>\[\LH\;\frac{1}{(\ln x + 1) + 1}\;\xrightarrow{x=1}\;\frac{1}{0+2} = \frac12\]
+          <span class="why">La derivada de \(x\ln x\) es \(\ln x + 1\) (regla del producto).</span></div></li>
+      </ol>
+      <span class="ans">\(\tfrac12\)</span>
+    </div>
+
+    <h3>3.2.4 · Las formas 1<sup>∞</sup>, 0<sup>0</sup>, ∞<sup>0</sup></h3>
+    <div class="ex">
+      <div class="t">Ejemplo resuelto · forma 1<sup>∞</sup></div>
+      <p class="q">\(\displaystyle L\) \(\displaystyle =\lim_{x\to\infty}\left(1+\frac3x\right)^{x}\)</p>
+      <ol class="steps">
+        <li><div><p>Base \(\to1\), exponente \(\to\infty\): forma \(1^\infty\). Tome logaritmo; el exponente baja a multiplicar:</p>
+          \[\begin{aligned}\ln L &= \lim_{x\to\infty} x\ln\!\left(1+\frac3x\right)\\ &= \lim_{x\to\infty}\frac{\ln\!\left(1+\frac3x\right)}{1/x}\qquad\left(\tfrac00\right)\end{aligned}\]</div></li>
+        <li><div><p>L’Hôpital. La derivada de \(\ln(1+3x^{-1})\) es \(\dfrac{-3x^{-2}}{1+3/x}\), y la de \(x^{-1}\) es \(-x^{-2}\):</p>
+          \[\ln L \;\LH\; \lim_{x\to\infty}\frac{\dfrac{-3x^{-2}}{1+3/x}}{-x^{-2}} = \lim_{x\to\infty}\frac{3}{1+3/x} = 3\]</div></li>
+        <li><div><p><strong>¡No se detenga aquí!</strong> Eso era \(\ln L\). La respuesta es \(L = e^{3}\).</p></div></li>
+      </ol>
+      <span class="ans">\(e^3\approx 20.09\)</span>
+      <p class="small"><strong>Patrón útil para verificar:</strong> \(\lim\limits_{x\to\infty}\left(1+\frac ax\right)^{x} \) \(= e^{a}\). De aquí sale el interés continuo de la sección 3.6 (ejercicio 80: \(P(1+\tfrac rn)^{nt}\) \(\to Pe^{rt}\)).</p>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo rápido · forma 0<sup>0</sup></div>
+      <p class="q">\(\displaystyle L\) \(\displaystyle =\lim_{x\to0^+} x^{x}\)</p>
+      <p>\(\ln L = \lim x\ln x\) (forma \(0\cdot\infty\)) \(= \lim \dfrac{\ln x}{x^{-1}} \;\) \(\LH\; \lim\dfrac{x^{-1}}{-x^{-2}}\) \(= \lim(-x) = 0\). Entonces \(L=e^0=1\).</p>
+    </div>
+
+    <h3>Entrenamiento: ¿qué forma es?</h3>
+    <p class="muted small">Sustituya mentalmente y toque la forma. Reconocer la forma es medio ejercicio.</p>
+    <div class="quiz" id="quiz">
+      <div class="qz" data-a="00"><div class="lim">\(\displaystyle\lim_{x\to0}\frac{e^x-1}{x}\)</div><div class="opts"></div><div class="fb" data-fb="0/0. Se aplica L’Hôpital directo y da 1."></div></div>
+      <div class="qz" data-a="ii"><div class="lim">\(\displaystyle\lim_{x\to\infty}\frac{\ln x}{x}\)</div><div class="opts"></div><div class="fb" data-fb="∞/∞. L’Hôpital: (1/x)/1 → 0."></div></div>
+      <div class="qz" data-a="0i"><div class="lim">\(\displaystyle\lim_{x\to0^+}x\ln x\)</div><div class="opts"></div><div class="fb" data-fb="0·∞. Se reescribe como ln x / x⁻¹ y da 0."></div></div>
+      <div class="qz" data-a="ni"><div class="lim">\(\displaystyle\lim_{x\to0}\frac{x+1}{x+2}\)</div><div class="opts"></div><div class="fb" data-fb="No es indeterminado: al sustituir da 1/2 y ese es el límite. Si usara L’Hôpital le daría 1, que está mal."></div></div>
+      <div class="qz" data-a="mi"><div class="lim">\(\displaystyle\lim_{x\to\infty}(x-\ln x)\)</div><div class="opts"></div><div class="fb" data-fb="∞−∞. Factorice: x(1 − ln x / x) → ∞(1−0) = ∞."></div></div>
+      <div class="qz" data-a="1i"><div class="lim">\(\displaystyle\lim_{x\to\infty}\left(1+\tfrac1x\right)^{x}\)</div><div class="opts"></div><div class="fb" data-fb="1^∞. Con logaritmo sale ln L = 1, así que L = e."></div></div>
+      <div class="qz" data-a="i0"><div class="lim">\(\displaystyle\lim_{x\to\infty}x^{1/x}\)</div><div class="opts"></div><div class="fb" data-fb="∞⁰. ln L = lim (ln x)/x = 0, así que L = e⁰ = 1."></div></div>
+      <div class="qz" data-a="ni"><div class="lim">\(\displaystyle\lim_{x\to0^+}x^{1/x}\)</div><div class="opts"></div><div class="fb" data-fb="No es indeterminado: es 0^∞, que da 0 (un número pequeñísimo multiplicado por sí mismo muchísimas veces)."></div></div>
+      <div class="qscore" id="qscore" aria-live="polite"></div>
+    </div>
+
+    <p class="ojo-title">¡Ojo! Errores comunes</p>
+    <div class="errs">
+      <div class="err"><h4>Usar la regla del cociente</h4>
+        <div class="no">\(\left(\dfrac{f}{g}\right)' \) \(= \dfrac{f'g-fg'}{g^2}\) y seguir con eso.</div>
+        <div class="si">En L’Hôpital se deriva arriba <em>y</em> abajo, cada uno por su lado: \(\dfrac{f'}{g'}\). No es la derivada de la fracción.</div></div>
+      <div class="err"><h4>Aplicarlo sin revisar la forma</h4>
+        <div class="no">\(\displaystyle\lim_{x\to0}\frac{x+1}{x+2}\) \(\displaystyle \) \(\displaystyle \LH\frac11=1\)</div>
+        <div class="si">Al sustituir da \(\tfrac12\), que ya es la respuesta. L’Hôpital solo funciona con \(\tfrac00\) o \(\tfrac\infty\infty\). Revise la forma <em>en cada paso</em>, no solo al inicio.</div></div>
+      <div class="err"><h4>Olvidar devolverse del logaritmo</h4>
+        <div class="no">“\(\ln L = 3\), entonces la respuesta es 3.”</div>
+        <div class="si">La respuesta es \(L=e^{3}\). Escriba “\(\ln L=\)” desde el inicio para no olvidarlo.</div></div>
+      <div class="err"><h4>Creer que las formas indeterminadas tienen valor fijo</h4>
+        <div class="no">\(1^\infty = 1,\) \(0\cdot\infty = 0,\) \(\infty-\infty=0\)</div>
+        <div class="si">Pueden dar cualquier cosa: \((1+\tfrac3x)^x\to e^3\), no 1. Por eso se llaman indeterminadas.</div></div>
+      <div class="err"><h4>Derivar un producto 0·∞ sin convertirlo</h4>
+        <div class="no">\(\lim x\ln x \) \(\LH \lim 1\cdot\tfrac1x\)</div>
+        <div class="si">Primero conviértalo en fracción: \(\dfrac{\ln x}{x^{-1}}\). La regla solo aplica a cocientes.</div></div>
+      <div class="err"><h4>Signo del logaritmo cerca de 0</h4>
+        <div class="no">\(\ln x\to\infty\) cuando \(x\to0^+\)</div>
+        <div class="si">\(\ln x\to-\infty\) cuando \(x\to0^+\), y \(\ln 1 = 0\). Haga un dibujito mental de la gráfica de \(\ln\).</div></div>
+    </div>
+
+    <h3>Práctica 3.2</h3>
+    <div class="practice" data-sec="s32">
+      <div class="prob" data-id="p32-24"><div class="head"><span class="tag">Libro #24</span><div class="txt"><p>\(\displaystyle\lim_{y\to1}\frac{y^3-2y^2-y+2}{y^3-7y+6}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>Forma \(\tfrac00\). \(\LH\ \dfrac{3y^2-4y-1}{3y^2-7}\) \(\to\dfrac{-2}{-4}\) \(=\dfrac12\)</p></div></details></div></div>
+      <div class="prob" data-id="p32-26"><div class="head"><span class="tag">Libro #26</span><div class="txt"><p>\(\displaystyle\lim_{p\to3}\frac{\sqrt{p+1}-2}{p-3}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(\tfrac00\). \(\LH\ \dfrac{\frac{1}{2\sqrt{p+1}}}{1}\) \(\to\dfrac{1}{2\cdot2}\) \(=\dfrac14\)</p></div></details></div></div>
+      <div class="prob" data-id="p32-28"><div class="head"><span class="tag">Libro #28</span><div class="txt"><p>\(\displaystyle\lim_{x\to0}\frac{e^{2x}-1}{x}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(\tfrac00\). \(\LH\ \dfrac{2e^{2x}}{1}\) \(\to2\)</p></div></details></div></div>
+      <div class="prob" data-id="p32-30"><div class="head"><span class="tag">Libro #30</span><div class="txt"><p>\(\displaystyle\lim_{w\to0}\frac{e^{w}-w-1}{w^2}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(\tfrac00\). \(\LH\ \dfrac{e^w-1}{2w}\) (otra vez \(\tfrac00\)) \(\LH\ \dfrac{e^w}{2}\) \(\to\dfrac12\)</p></div></details></div></div>
+      <div class="prob" data-id="p32-35"><div class="head"><span class="tag">Libro #35</span><div class="txt"><p>\(\displaystyle\lim_{u\to1}\frac{\ln u}{u^2-1}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(\tfrac00\) (porque \(\ln1=0\)). \(\LH\ \dfrac{1/u}{2u}\) \(\to\dfrac12\)</p></div></details></div></div>
+      <div class="prob" data-id="p32-44"><div class="head"><span class="tag">Libro #44</span><div class="txt"><p>\(\displaystyle\lim_{v\to0^+}v^2\ln v\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(0\cdot\infty\). \(\dfrac{\ln v}{v^{-2}}\) \(\LH\dfrac{v^{-1}}{-2v^{-3}}\) \(= -\dfrac{v^2}{2}\to0\)</p></div></details></div></div>
+      <div class="prob" data-id="p32-51"><div class="head"><span class="tag">Libro #51</span><div class="txt"><p>\(\displaystyle\lim_{p\to\infty}(p-\ln p)\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(\infty-\infty\). \(p\left(1-\dfrac{\ln p}{p}\right)\); como \(\dfrac{\ln p}{p}\) \(\LH\dfrac{1/p}{1}\to0\), queda \(\infty(1-0)=\infty\).</p></div></details></div></div>
+      <div class="prob" data-id="p32-56"><div class="head"><span class="tag">Libro #56</span><div class="txt"><p>\(\displaystyle\lim_{x\to3}\left(\frac1{x-3}-\frac5{x^2-x-6}\right)\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(x^2-x-6=(x-3)(x+2)\). Común denominador: \(\dfrac{(x+2)-5}{(x-3)(x+2)}\) \(=\dfrac{x-3}{(x-3)(x+2)}\) \(=\dfrac1{x+2}\) \(\to\dfrac15\). Aquí el álgebra fue más rápida que L’Hôpital.</p></div></details></div></div>
+      <div class="prob" data-id="p32-60"><div class="head"><span class="tag">Libro #60</span><div class="txt"><p>\(\displaystyle\lim_{q\to0}\left(\frac1q-\frac1{e^q-1}\right)\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(\dfrac{e^q-1-q}{q(e^q-1)}\) es \(\tfrac00\). \(\LH\ \dfrac{e^q-1}{e^q-1+qe^q}\) (otra vez \(\tfrac00\)) \(\LH\ \dfrac{e^q}{2e^q+qe^q}\) \(\to\dfrac{1}{2}\)</p></div></details></div></div>
+      <div class="prob" data-id="p32-64"><div class="head"><span class="tag">Libro #64</span><div class="txt"><p>\(\displaystyle\lim_{t\to0}(1-t)^{1/t}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(1^\infty\). \(\ln L\) \(=\lim\dfrac{\ln(1-t)}{t}\) \(\LH\lim\dfrac{-1/(1-t)}{1}\) \(=-1\). Entonces \(L=e^{-1}\).</p></div></details></div></div>
+      <div class="prob" data-id="p32-74"><div class="head"><span class="tag">Libro #74</span><div class="txt"><p>\(\displaystyle\lim_{x\to\infty}\left(1-\frac5x\right)^{x}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(1^\infty\). \(\ln L\) \(=\lim\dfrac{\ln(1-5/x)}{1/x}\) \(\LH\lim\dfrac{\frac{5x^{-2}}{1-5/x}}{-x^{-2}}\) \(=\lim\dfrac{-5}{1-5/x}\) \(=-5\). Entonces \(L=e^{-5}\).</p></div></details></div></div>
+      <div class="prob" data-id="p32-61"><div class="head"><span class="tag">Libro #61</span><div class="txt"><p>\(\displaystyle\lim_{y\to\infty}y^{1/y}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(\infty^0\). \(\ln L\) \(=\lim\dfrac{\ln y}{y}\) \(=0\). Entonces \(L=e^0=1\).</p></div></details></div></div>
+    </div>
+  </section>
+
+  <!-- ====================== 3.3 ====================== -->
+  <section id="s33">
+    <div class="eyebrow"><span class="sec">3.3</span>Páginas 68–70 del libro</div>
+    <h2>Crecimiento y decrecimiento</h2>
+    <p class="idea">\(f'\) es la pendiente. Si \(f'\) es <span class="hl">positiva, la función sube</span>; si es negativa, baja. No hace falta dibujar la gráfica: basta el signo de \(f'\).</p>
+
+    <div class="key"><span class="lbl">Teorema</span>
+      <p>Si \(f'(x)\ge0\) en un intervalo \(I\), \(f\) es <strong>creciente</strong> en \(I\).<br>Si \(f'(x)\le0\) en un intervalo \(I\), \(f\) es <strong>decreciente</strong> en \(I\).</p>
+    </div>
+
+    <h3>Laboratorio: mueva el punto</h3>
+    <p class="muted small">La línea punteada es la tangente; su pendiente es \(f'(x)\). Fíjese en que la curva se pinta de verde donde \(f'>0\) y de rojo donde \(f'<0\), y en lo que pasa cuando la tangente queda horizontal.</p>
+    <div class="lab" id="lab">
+      <div class="lab-top">
+        <b id="lab-title">\(f(x)=x^3-3x^2-9x+5\)</b>
+        <div class="seg" role="group" aria-label="Escoger función">
+          <button type="button" data-f="0" aria-pressed="true">Cúbica</button>
+          <button type="button" data-f="1" aria-pressed="false">Con pico</button>
+        </div>
+      </div>
+      <canvas id="lab-cv" aria-label="Gráfica interactiva de la función con su recta tangente"></canvas>
+      <div class="lab-ctl">
+        <label for="lab-x" class="small muted">Mueva \(x\)</label>
+        <input id="lab-x" type="range" min="0" max="1000" value="250">
+        <div class="lab-read">
+          <div><small>x</small><span id="r-x">–</span></div>
+          <div><small>f(x)</small><span id="r-f">–</span></div>
+          <div><small>f′(x) pendiente</small><span id="r-d">–</span></div>
+          <div><small>f″(x)</small><span id="r-dd">–</span></div>
+          <div><small>En este punto</small><span id="r-s" class="state">–</span></div>
+        </div>
+        <div class="lab-jump" id="lab-jump">Ir a punto crítico:</div>
+      </div>
+    </div>
+
+    <h3>El método: mapa de signos de f′</h3>
+    <ol class="steps">
+      <li><div><p>Derive y <strong>factorice</strong> \(f'\).</p></div></li>
+      <li><div><p>Busque dónde \(f'=0\) y dónde \(f'\) no existe (denominador cero, raíz par de negativo). Anote también los puntos que no están en el dominio de \(f\).</p></div></li>
+      <li><div><p>Póngalos en orden sobre una recta numérica. Quedan varios intervalos.</p></div></li>
+      <li><div><p>En cada intervalo, pruebe un número cualquiera en \(f'\) y anote el signo.</p></div></li>
+      <li><div><p>\(+\) → crece, \(-\) → decrece. Escriba la respuesta con intervalos.</p></div></li>
+    </ol>
+    <p class="small muted">Notación del libro: \(]a,b[\) es abierto, \([a,b]\) es cerrado, y el infinito siempre va abierto: \(]-\infty,1]\), \([3,\infty[\). Los puntos críticos se incluyen con corchete cerrado.</p>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 1</div>
+      <p class="q">¿Dónde crece y dónde decrece \(f(x)=x^3-6x^2+9x+1\)?</p>
+      <ol class="steps">
+        <li><div>\[\begin{aligned}f'(x)&=3x^2-12x+9\\ &= 3(x^2-4x+3) = 3(x-1)(x-3)\end{aligned}\]</div></li>
+        <li><div><p>Ceros: \(x=1\) y \(x=3\). No hay puntos donde \(f'\) no exista (es un polinomio).</p></div></li>
+        <li><div><p>Pruebe un valor en cada intervalo: \(f'(0)=9>0\), \(f'(2)=3(1)(-1)=-3<0\), \(f'(4)=3(3)(1)=9>0\).</p>
+          <div class="sm" role="img" aria-label="Mapa de signos: positivo antes de 1, negativo entre 1 y 3, positivo después de 3">
+            <div class="sm-grid" style="grid-template-columns:40px 1fr auto 1fr auto 1fr">
+              <span class="sm-name">f′:</span><span class="p">+</span><span class="z">0</span><span class="m">−</span><span class="z">0</span><span class="p">+</span>
+              <span></span><span class="axis" style="grid-column:2/7"></span>
+              <span></span><span></span><span class="tk">1</span><span></span><span class="tk">3</span><span></span>
+              <span class="sm-name">f:</span><span class="bh up">crece ↗</span><span></span><span class="bh dn">decrece ↘</span><span></span><span class="bh up">crece ↗</span>
+            </div>
+          </div></div></li>
+      </ol>
+      <span class="ans">Crece en \(]-\infty,1]\) y en \([3,\infty[\); decrece en \([1,3]\).</span>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 2 · con exponencial</div>
+      <p class="q">\(f(x)=x\,e^{-x}\)</p>
+      <ol class="steps">
+        <li><div><p>Regla del producto: \(f'(x) \) \(= 1\cdot e^{-x} + x\cdot(-e^{-x})\) \(= e^{-x}(1-x)\).</p></div></li>
+        <li><div><p>\(e^{-x}\) <strong>siempre es positivo</strong>, así que el signo lo decide solo \((1-x)\): positivo si \(x<1\), negativo si \(x>1\).</p>
+          <span class="why">Cualquier \(e^{\text{algo}}\) es mayor que cero. Cuando aparezca como factor, puede ignorarlo para el signo.</span></div></li>
+      </ol>
+      <span class="ans">Crece en \(]-\infty,1]\); decrece en \([1,\infty[\).</span>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 3 · con un hueco en el dominio (libro #92)</div>
+      <p class="q">\(f(t)=\dfrac1{3t-4}\)</p>
+      <ol class="steps">
+        <li><div><p>\(f(t)=(3t-4)^{-1}\) \(\Rightarrow f'(t)\) \(= -3(3t-4)^{-2}\) \(= \dfrac{-3}{(3t-4)^2}\).</p></div></li>
+        <li><div><p>Nunca es cero. El denominador es un cuadrado (positivo), así que \(f'<0\) siempre. Pero \(t=4/3\) no está en el dominio.</p>
+          <div class="sm" role="img" aria-label="Mapa de signos: negativo a ambos lados de 4/3, que no está en el dominio">
+            <div class="sm-grid" style="grid-template-columns:40px 1fr auto 1fr">
+              <span class="sm-name">f′:</span><span class="m">−</span><span class="x">✕</span><span class="m">−</span>
+              <span></span><span class="axis" style="grid-column:2/5"></span>
+              <span></span><span></span><span class="tk">4/3</span><span></span>
+              <span class="sm-name">f:</span><span class="bh dn">decrece ↘</span><span></span><span class="bh dn">decrece ↘</span>
+            </div>
+          </div></div></li>
+      </ol>
+      <span class="ans">Decrece en \(]-\infty,4/3[\) y en \(]4/3,\infty[\) (por separado; \(4/3\) va abierto porque no está en el dominio).</span>
+    </div>
+
+    <p class="ojo-title">¡Ojo! Errores comunes</p>
+    <div class="errs">
+      <div class="err"><h4>Unir los intervalos</h4>
+        <div class="no">“Decrece en \(]-\infty,1/3]\cup[1,\infty[\)”</div>
+        <div class="si">“Decrece en \(]-\infty,1/3]\) <strong>y en</strong> \([1,\infty[\)”. El teorema solo sirve en un intervalo. Una función puede bajar en dos pedazos y no bajar en la unión (vea la gráfica de la pág. 69).</div></div>
+      <div class="err"><h4>Mirar el signo de f en vez del de f′</h4>
+        <div class="no">Probar valores en \(f(x)\) para decidir si crece.</div>
+        <div class="si">Pruebe los valores en \(f'(x)\). Que \(f\) sea negativa no quiere decir que baje.</div></div>
+      <div class="err"><h4>Suponer que los signos se alternan</h4>
+        <div class="no">“Hay dos ceros, entonces el mapa es \(+\,-\,+\)”.</div>
+        <div class="si">Pruebe cada intervalo. En \(f'(u)=12u^2(u-1)\) el factor \(u^2\) no cambia de signo: el mapa es \(-\,-\,+\).</div></div>
+      <div class="err"><h4>Perder soluciones al despejar</h4>
+        <div class="no">\(4s^3+12s^2+8s=0\) → “divido entre \(s\)” → \(4s^2+12s+8=0\)</div>
+        <div class="si">Factorice: \(4s(s+1)(s+2)=0\) \(\Rightarrow s=0,-1,-2\). Dividir entre \(s\) borra el \(s=0\).</div></div>
+      <div class="err"><h4>Olvidar el dominio</h4>
+        <div class="no">En \(2q^2-2\ln q\), estudiar también \(q<0\).</div>
+        <div class="si">\(\ln q\) solo existe si \(q>0\). La recta empieza en 0: “decrece en \(]0,1/\sqrt2]\)”.</div></div>
+    </div>
+
+    <h3>Práctica 3.3</h3>
+    <div class="practice" data-sec="s33">
+      <div class="prob" data-id="p33-81"><div class="head"><span class="tag">Libro #81</span><div class="txt"><p>\(1-4u-u^2\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=-4-2u=0\) \(\Rightarrow u=-2\). \(f'(-3)=2>0\), \(f'(0)=-4<0\).</p><p>Crece en \(]-\infty,-2]\); decrece en \([-2,\infty[\).</p></div></details></div></div>
+      <div class="prob" data-id="p33-82"><div class="head"><span class="tag">Libro #82</span><div class="txt"><p>\(y^3-3y-2\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=3y^2-3=3(y-1)(y+1)\). Mapa: \(+\ (-1)\ -\ (1)\ +\).</p><p>Crece en \(]-\infty,-1]\) y en \([1,\infty[\); decrece en \([-1,1]\).</p></div></details></div></div>
+      <div class="prob" data-id="p33-83"><div class="head"><span class="tag">Libro #83</span><div class="txt"><p>\(r^2(3-r)\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>Desarrolle: \(3r^2-r^3\Rightarrow f'\) \(=6r-3r^2=3r(2-r)\). Mapa: \(-\ (0)\ +\ (2)\ -\).</p><p>Crece en \([0,2]\); decrece en \(]-\infty,0]\) y en \([2,\infty[\).</p></div></details></div></div>
+      <div class="prob" data-id="p33-84"><div class="head"><span class="tag">Libro #84</span><div class="txt"><p>\(s^4+4s^3+4s^2\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=4s^3+12s^2+8s\) \(=4s(s+1)(s+2)\). Pruebe \(-3,-1.5,-0.5,1\): \(-,+,-,+\).</p><p>Crece en \([-2,-1]\) y en \([0,\infty[\); decrece en \(]-\infty,-2]\) y en \([-1,0]\).</p></div></details></div></div>
+      <div class="prob" data-id="p33-94"><div class="head"><span class="tag">Libro #94</span><div class="txt"><p>\(x\,e^{x}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=e^x+xe^x=e^x(x+1)\); \(e^x>0\), decide \(x+1\).</p><p>Crece en \([-1,\infty[\); decrece en \(]-\infty,-1]\).</p></div></details></div></div>
+      <div class="prob" data-id="p33-97"><div class="head"><span class="tag">Libro #97</span><div class="txt"><p>\(e^{y}+e^{-y}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=e^y-e^{-y}=0\) \(\Rightarrow e^y=e^{-y}\) \(\Rightarrow y=-y\) \(\Rightarrow y=0\). \(f'(1)>0\), \(f'(-1)<0\).</p><p>Crece en \([0,\infty[\); decrece en \(]-\infty,0]\).</p></div></details></div></div>
+      <div class="prob" data-id="p33-100"><div class="head"><span class="tag">Libro #100</span><div class="txt"><p>\(2q^2-2\ln q\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>Dominio \(q>0\). \(f'=4q-\dfrac2q\) \(=\dfrac{4q^2-2}{q}=0\) \(\Rightarrow q\) \(=\dfrac1{\sqrt2}\) (la negativa no sirve).</p><p>Crece en \([1/\sqrt2,\infty[\); decrece en \(]0,1/\sqrt2]\).</p></div></details></div></div>
+      <div class="prob" data-id="p33-87"><div class="head"><span class="tag">Libro #87</span><div class="txt"><p>\(5z^{2/3}+z^{5/3}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'\) \(=\tfrac{10}{3}z^{-1/3}+\tfrac53z^{2/3}\) \(=\dfrac{5(z+2)}{3\sqrt[3]{z}}\). Cero en \(z=-2\); no existe en \(z=0\) (pero \(f(0)\) sí existe).</p><p>Mapa: \(+\ (-2)\ -\ (0)\ +\). Crece en \(]-\infty,-2]\) y en \([0,\infty[\); decrece en \([-2,0]\).</p></div></details></div></div>
+    </div>
+  </section>
+
+  <!-- ====================== 3.4 ====================== -->
+  <section id="s34">
+    <div class="eyebrow"><span class="sec">3.4</span>Páginas 70–80 del libro</div>
+    <h2>Máximos y mínimos de una función</h2>
+    <p class="idea">Las cimas y los valles de una gráfica solo pueden estar donde la pendiente es <span class="hl">cero (cima plana) o no existe (pico puntiagudo)</span>. Esos son los puntos críticos.</p>
+
+    <div class="rule-grid">
+      <div><b>Máximo local en c</b>\(f(c)\) es el valor más alto <em>cerca</em> de \(c\). Puede haber puntos más altos lejos.</div>
+      <div><b>Mínimo local en c</b>\(f(c)\) es el valor más bajo cerca de \(c\).</div>
+      <div><b>Punto crítico</b>Un \(c\) <strong>del dominio</strong> donde \(f'(c)=0\) (tipo 1) o \(f'(c)\) no existe (tipo 2).</div>
+    </div>
+    <div class="key"><span class="lbl">Lo que dice el teorema (y lo que no)</span>
+      <p>Todo extremo local está en un punto crítico. Pero <strong>no todo punto crítico es un extremo</strong>: \(f(x)=x^3\) tiene \(f'(0)=0\) y en 0 no hay ni máximo ni mínimo (sigue subiendo). Por eso, después de encontrar los críticos, siempre hay que clasificarlos.</p>
+    </div>
+
+    <h3>Criterio de la primera derivada (siempre funciona)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Al pasar por c, f′ cambia de…</th><th>Entonces en c hay…</th><th>Dibujo</th></tr></thead>
+        <tbody>
+          <tr><td>\(+\) a \(-\)</td><td class="k">Máximo local</td><td>sube y baja ∩</td></tr>
+          <tr><td>\(-\) a \(+\)</td><td class="k">Mínimo local</td><td>baja y sube ∪</td></tr>
+          <tr><td>No cambia</td><td class="k">Nada</td><td>sigue igual</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Criterio de la segunda derivada (más rápido, pero a veces no dice nada)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>En el punto crítico c</th><th>Conclusión</th><th>Para recordarlo</th></tr></thead>
+        <tbody>
+          <tr><td>\(f''(c)<0\)</td><td class="k">Máximo local</td><td>Negativo = carita triste ∩ = cima</td></tr>
+          <tr><td>\(f''(c)>0\)</td><td class="k">Mínimo local</td><td>Positivo = carita feliz ∪ = valle</td></tr>
+          <tr><td>\(f''(c)=0\) o no existe</td><td class="k">No concluye</td><td>Use el criterio de la primera derivada</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="key"><span class="lbl">Tres cosas distintas que le pueden pedir</span>
+      <p>Para el mínimo de \(f(x)=x-1+x^2-x^3\) (ejemplo 10 del libro):</p>
+      <ul style="margin:4px 0">
+        <li><strong>Dónde se alcanza:</strong> \(x=-1/3\) (primera coordenada).</li>
+        <li><strong>Valor mínimo:</strong> \(y=f(-1/3)=-32/27\) (segunda coordenada).</li>
+        <li><strong>Punto mínimo:</strong> \((-1/3,\,-32/27)\) (el par ordenado). Si no está claro qué piden, dé el punto completo.</li>
+      </ul>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 1 · los dos criterios</div>
+      <p class="q">Encuentre los extremos locales de \(f(x)=x^3-3x^2-9x+5\).</p>
+      <ol class="steps">
+        <li><div><p><strong>Puntos críticos.</strong> \(f'(x)=3x^2-6x-9\) \(=3(x+1)(x-3)\). Ceros: \(x=-1\), \(x=3\). Es polinomio, no hay del tipo 2.</p></div></li>
+        <li><div><p><strong>Clasificar con la 1.ª derivada.</strong> \(f'(-2)=15>0\), \(f'(0)=-9<0\), \(f'(4)=15>0\).</p>
+          <div class="sm" role="img" aria-label="Mapa de signos: positivo, cero en -1, negativo, cero en 3, positivo">
+            <div class="sm-grid" style="grid-template-columns:40px 1fr auto 1fr auto 1fr">
+              <span class="sm-name">f′:</span><span class="p">+</span><span class="z">0</span><span class="m">−</span><span class="z">0</span><span class="p">+</span>
+              <span></span><span class="axis" style="grid-column:2/7"></span>
+              <span></span><span></span><span class="tk">−1</span><span></span><span class="tk">3</span><span></span>
+              <span></span><span></span><span class="bh mx">máx</span><span></span><span class="bh mn">mín</span><span></span>
+            </div>
+          </div></div></li>
+        <li><div><p><strong>O con la 2.ª derivada.</strong> \(f''(x)=6x-6\). \(f''(-1)=-12<0\) → máximo. \(f''(3)=12>0\) → mínimo. Mismo resultado.</p></div></li>
+        <li><div><p><strong>Valores.</strong> Sustituya en la \(f\) <em>original</em>: \(f(-1)=-1-3+9+5=10\); \(f(3)=27-27-27+5=-22\).</p></div></li>
+      </ol>
+      <span class="ans">Máximo local en \((-1,10)\); mínimo local en \((3,-22)\).</span>
+      <p class="small muted">Es la función del laboratorio de 3.3: puede ir a verla.</p>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 2 · punto crítico del tipo 2</div>
+      <p class="q">Extremos locales de \(f(x)=x^{2/3}(x-5)\).</p>
+      <ol class="steps">
+        <li><div><p>Desarrolle y derive: \(f=x^{5/3}-5x^{2/3}\) \(\Rightarrow f'\) \(=\tfrac53x^{2/3}-\tfrac{10}{3}x^{-1/3}\). Saque factor común \(\tfrac53x^{-1/3}\):</p>
+          \[f'(x)=\frac53x^{-1/3}(x-2)=\frac{5(x-2)}{3\sqrt[3]{x}}\]</div></li>
+        <li><div><p>Críticos: \(f'=0\) en \(x=2\) (tipo 1). \(f'\) no existe en \(x=0\), y \(f(0)=0\) sí existe, así que \(x=0\) también es crítico (tipo 2).</p></div></li>
+        <li><div><p>Signos: \(f'(-1)\) \(=\frac{5(-3)}{3(-1)}\) \(=5>0\); \(f'(1)=\frac{5(-1)}{3}<0\); \(f'(8)=\frac{30}{6}>0\).</p>
+          <div class="sm" role="img" aria-label="Mapa de signos: positivo, no existe en 0, negativo, cero en 2, positivo">
+            <div class="sm-grid" style="grid-template-columns:40px 1fr auto 1fr auto 1fr">
+              <span class="sm-name">f′:</span><span class="p">+</span><span class="x">✕</span><span class="m">−</span><span class="z">0</span><span class="p">+</span>
+              <span></span><span class="axis" style="grid-column:2/7"></span>
+              <span></span><span></span><span class="tk">0</span><span></span><span class="tk">2</span><span></span>
+              <span></span><span></span><span class="bh mx">máx</span><span></span><span class="bh mn">mín</span><span></span>
+            </div>
+          </div>
+          <span class="why">El ✕ marca donde \(f'\) no existe. En el laboratorio de 3.3, escoja “Con pico” para ver esa punta.</span></div></li>
+        <li><div><p>Valores: \(f(0)=0\); \(f(2)=2^{2/3}(2-5)\) \(=-3\sqrt[3]4\) \(\approx-4.76\).</p></div></li>
+      </ol>
+      <span class="ans">Máximo local en \((0,0)\); mínimo local en \((2,\,-3\sqrt[3]{4})\) \(\approx(2,\,-4.76)\).</span>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 3 · cuando falla la segunda derivada</div>
+      <p class="q">Compare \(f(x)=x^4\) y \(g(x)=x^3\) en \(x=0\).</p>
+      <p>En las dos, \(x=0\) es crítico y la segunda derivada da 0 (\(f''=12x^2\), \(g''=6x\)). El criterio no concluye. Con la primera derivada:</p>
+      <ul>
+        <li>\(f'=4x^3\): negativo antes de 0, positivo después → <strong>mínimo</strong> en \((0,0)\).</li>
+        <li>\(g'=3x^2\): positivo antes y después → <strong>no hay extremo</strong>.</li>
+      </ul>
+      <p class="small muted">Moraleja: \(f''(c)=0\) no quiere decir “no hay extremo”. Quiere decir “use otro método”.</p>
+    </div>
+
+    <h3 id="s34-abs">3.4.3 · Extremos absolutos en un intervalo cerrado [a, b]</h3>
+    <p>El máximo absoluto es el punto más alto de <em>toda</em> la gráfica (en el intervalo), no solo cerca. Si \(f\) es continua en \([a,b]\), siempre hay máximo y mínimo absolutos, y están en un punto crítico o en un borde. Entonces basta una tabla.</p>
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 4</div>
+      <p class="q">Extremos absolutos de \(f(x)=x^3-3x^2-9x+5\) en \([-2,4]\).</p>
+      <ol class="steps">
+        <li><div><p>Críticos (del ejemplo 1): \(x=-1\) y \(x=3\). Los dos están dentro de \([-2,4]\), así que los dos entran a la tabla.</p></div></li>
+        <li><div><p>Evalúe \(f\) en los críticos <strong>y</strong> en los bordes:</p>
+          <div class="tbl-wrap" style="max-width:420px"><table>
+            <thead><tr><th>x</th><th>−2 (borde)</th><th>−1</th><th>3</th><th>4 (borde)</th></tr></thead>
+            <tbody><tr><td>f(x)</td><td>3</td><td><strong>10</strong></td><td><strong>−22</strong></td><td>−15</td></tr></tbody>
+          </table></div></div></li>
+        <li><div><p>El mayor de la tabla es el máximo absoluto y el menor es el mínimo absoluto.</p></div></li>
+      </ol>
+      <span class="ans">Máximo absoluto \(10\) en \(x=-1\); mínimo absoluto \(-22\) en \(x=3\).</span>
+    </div>
+
+    <p class="ojo-title">¡Ojo! Errores comunes</p>
+    <div class="errs">
+      <div class="err"><h4>Evaluar el valor en f′</h4>
+        <div class="no">“El valor máximo es \(f'(-1)=0\)”</div>
+        <div class="si">Siempre da 0, porque así encontró el punto. El valor se calcula en la \(f\) original: \(f(-1)=10\).</div></div>
+      <div class="err"><h4>Concluir que no hay extremo porque f″(c) = 0</h4>
+        <div class="no">“\(f''(0)=0\), entonces no hay máximo ni mínimo.”</div>
+        <div class="si">Pase al criterio de la primera derivada. Con \(x^4\) sí hay mínimo.</div></div>
+      <div class="err"><h4>Invertir el criterio de la segunda derivada</h4>
+        <div class="no">\(f''(c)<0\) → mínimo</div>
+        <div class="si">\(f''(c)<0\) → <strong>máximo</strong> (carita triste ∩).</div></div>
+      <div class="err"><h4>Contar como crítico un punto fuera del dominio</h4>
+        <div class="no">En \(\dfrac{u^2}{u-1}\), decir que \(u=1\) es un máximo o un mínimo.</div>
+        <div class="si">\(u=1\) no está en el dominio: va en el mapa de signos (puede cambiar el signo) pero no es extremo.</div></div>
+      <div class="err"><h4>Extremos absolutos incompletos</h4>
+        <div class="no">Comparar solo los puntos críticos, o meter en la tabla un crítico que está fuera de \([a,b]\).</div>
+        <div class="si">Tabla = críticos <em>dentro</em> del intervalo + los dos bordes.</div></div>
+    </div>
+
+    <h3>Práctica 3.4</h3>
+    <div class="practice" data-sec="s34">
+      <div class="prob" data-id="p34-104"><div class="head"><span class="tag">Libro #104</span><div class="txt"><p>Extremos locales de \(2x^3+3x^2-12x-7\) (segunda derivada).</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=6x^2+6x-12=6(x+2)(x-1)\). \(f''=12x+6\).</p><p>\(f''(-2)=-18<0\) → máx; \(f(-2)=13\). \(f''(1)=18>0\) → mín; \(f(1)=-14\).</p><p><strong>Máx en \((-2,13)\); mín en \((1,-14)\).</strong></p></div></details></div></div>
+      <div class="prob" data-id="p34-105"><div class="head"><span class="tag">Libro #105</span><div class="txt"><p>\(3u^4-4u^3+1\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=12u^3-12u^2=12u^2(u-1)\); críticos \(u=0,1\). \(f''=36u^2-24u\).</p><p>\(f''(1)=12>0\) → mín en \((1,0)\). \(f''(0)=0\): no concluye; \(f'\) es negativa a ambos lados de 0 → no hay extremo.</p><p><strong>Solo mín en \((1,0)\).</strong></p></div></details></div></div>
+      <div class="prob" data-id="p34-107"><div class="head"><span class="tag">Libro #107</span><div class="txt"><p>\(\dfrac{u^2}{u-1}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>Cociente: \(f'\) \(=\dfrac{2u(u-1)-u^2}{(u-1)^2}\) \(=\dfrac{u(u-2)}{(u-1)^2}\). Críticos \(u=0,2\) (\(u=1\) no está en el dominio).</p><p>Mapa: \(+\ (0)\ -\ (1✕)\ -\ (2)\ +\).</p><p><strong>Máx en \((0,0)\); mín en \((2,4)\).</strong></p></div></details></div></div>
+      <div class="prob" data-id="p34-113"><div class="head"><span class="tag">Libro #113</span><div class="txt"><p>\(v^2e^{v}\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=2ve^v+v^2e^v\) \(=e^v\,v(v+2)\). Críticos \(v=-2,0\). Mapa: \(+\ (-2)\ -\ (0)\ +\).</p><p><strong>Máx en \((-2,\,4e^{-2})\); mín en \((0,0)\).</strong></p></div></details></div></div>
+      <div class="prob" data-id="p34-115"><div class="head"><span class="tag">Libro #115</span><div class="txt"><p>\(z-\ln z\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=1-\dfrac1z=0\) \(\Rightarrow z=1\). \(f''=\dfrac1{z^2}>0\) → mínimo. \(f(1)=1-0=1\).</p><p><strong>Mín en \((1,1)\).</strong></p></div></details></div></div>
+      <div class="prob" data-id="p34-116"><div class="head"><span class="tag">Libro #116</span><div class="txt"><p>\(\ln(t^2+5)\)</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=\dfrac{2t}{t^2+5}=0\) \(\Rightarrow t=0\). Signo: \(-\) antes, \(+\) después → mínimo.</p><p><strong>Mín en \((0,\ln5)\).</strong></p></div></details></div></div>
+      <div class="prob" data-id="p34-117"><div class="head"><span class="tag">Libro #117</span><div class="txt"><p>Extremos absolutos de \(2z^2+6z-3\) en \([-2,3]\).</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=4z+6=0\Rightarrow z\) \(=-3/2\) (está en el intervalo).</p><p>Tabla: \(f(-2)=-7\), \(f(-3/2)=-15/2\), \(f(3)=33\).</p><p><strong>Máx absoluto \(33\) en \(z=3\); mín absoluto \(-15/2\) en \(z=-3/2\).</strong></p></div></details></div></div>
+      <div class="prob" data-id="p34-118"><div class="head"><span class="tag">Libro #118</span><div class="txt"><p>Extremos absolutos de \(2p^3+3p^2-12p+1\) en \([-1,5]\).</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=6(p+2)(p-1)\). \(p=-2\) queda fuera; solo entra \(p=1\).</p><p>Tabla: \(f(-1)=14\), \(f(1)=-6\), \(f(5)=266\).</p><p><strong>Máx absoluto \(266\) en \(p=5\); mín absoluto \(-6\) en \(p=1\).</strong></p></div></details></div></div>
+      <div class="prob" data-id="p34-126"><div class="head"><span class="tag">Libro #126</span><div class="txt"><p>Extremos absolutos de \(x\,e^{-x}\) en \([0,1]\).</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(f'=e^{-x}(1-x)\ge0\) en todo el intervalo (el crítico \(x=1\) es el borde).</p><p>Tabla: \(f(0)=0\), \(f(1)=e^{-1}\approx0.368\).</p><p><strong>Máx absoluto \(e^{-1}\) en \(x=1\); mín absoluto \(0\) en \(x=0\).</strong></p></div></details></div></div>
+    </div>
+  </section>
+
+  <!-- ====================== 3.5 ====================== -->
+  <section id="s35">
+    <div class="eyebrow"><span class="sec">3.5</span>Páginas 81–97 del libro</div>
+    <h2>Problemas de optimización</h2>
+    <p class="idea">Es lo mismo que 3.4, pero primero hay que <span class="hl">convertir el texto en una función de una sola variable</span>. Esa traducción es el 80 % del trabajo.</p>
+
+    <div class="key"><span class="lbl">La receta de 6 pasos (página 81)</span>
+      <ol style="margin:6px 0 4px">
+        <li><strong>Variables.</strong> Ponga nombre a todo lo que cambia, con unidades: \(q\) = unidades, \(p\) = precio, \(x\) = lado en cm…</li>
+        <li><strong>Función objetivo.</strong> ¿Qué se quiere maximizar o minimizar? Utilidad, costo, área, volumen, ingreso.</li>
+        <li><strong>Ecuaciones que relacionan</strong> las variables: la ecuación de demanda, el material disponible, \(nx=D\)…</li>
+        <li><strong>Una sola variable.</strong> Despeje de las ecuaciones y sustituya en la función objetivo.</li>
+        <li><strong>Optimizar.</strong> Derive, iguale a cero, encuentre el crítico y <em>verifique</em> que es máximo o mínimo.</li>
+        <li><strong>Responder</strong> exactamente lo que preguntaron (¿el precio? ¿la cantidad? ¿la utilidad máxima?), con unidades.</li>
+      </ol>
+    </div>
+
+    <div class="rule-grid">
+      <div><b>Fórmulas de negocio</b>\(I=pq\) <br>\(U=I-C\)<br>\(C\) \(=\text{fijos}+(\text{unitario})\,q\)<br>\(\bar C = C/q\)</div>
+      <div><b>Atajo del vértice</b>Si la función objetivo es \(ax^2+bx+c\):<br>\(x_v=\dfrac{-b}{2a}\)<br>\(a<0\) → máximo; \(a>0\) → mínimo.</div>
+      <div><b>Tres formas de verificar</b>1) Segunda derivada.<br>2) Tabla en un intervalo cerrado.<br>3) Si es cuadrática, el signo de \(a\).</div>
+    </div>
+
+    <h3>Tipo 1 · Problemas de negocio</h3>
+    <div class="ex">
+      <div class="t">Ejemplo resuelto</div>
+      <p class="q">Una fábrica tiene costos fijos de 3000 y un costo unitario de 40. La demanda es \(p=200-0.5q\). ¿Qué precio maximiza la utilidad, y cuánto es la utilidad máxima?</p>
+      <ol class="steps">
+        <li><div><p><strong>Variables:</strong> \(p\) precio, \(q\) cantidad, \(I\) ingreso, \(C\) costo, \(U\) utilidad.</p></div></li>
+        <li><div><p><strong>Objetivo:</strong> maximizar \(U=I-C\).</p></div></li>
+        <li><div><p><strong>Relaciones:</strong> \(I=pq\), \(\ p=200-0.5q\), \(\ C=3000+40q\).</p></div></li>
+        <li><div><p><strong>Una variable.</strong> Lo más corto es dejarlo en \(q\) (sustituir \(p\) directamente, como el ejemplo 17 del libro):</p>
+          \[\begin{aligned}U&=(200-0.5q)q-(3000+40q)\\ &=-0.5q^2+160q-3000\end{aligned}\]</div></li>
+        <li><div><p><strong>Optimizar.</strong> \(U'=-q+160=0\) \(\Rightarrow q=160\). \(U''=-1<0\) → máximo. (O vértice: \(q_v\) \(=\frac{-160}{2(-0.5)}\) \(=160\), con \(a<0\).)</p></div></li>
+        <li><div><p><strong>Responder.</strong> Preguntaron el <em>precio</em>: \(p=200-0.5(160)=120\). Utilidad: \(U(160)\) \(=-12\,800+25\,600-3000\) \(=9800\).</p>
+          <span class="why">Encontrar \(q\) no era la respuesta. El paso 6 existe para no olvidar esto.</span></div></li>
+      </ol>
+      <span class="ans">Precio \(p=120\) (vendiendo 160 unidades); utilidad máxima \(9800\).</span>
+    </div>
+
+    <h3>Tipo 2 · Aumento / reducción</h3>
+    <p>Una cosa sube mientras otra baja (“por cada ₡200 de rebaja se venden 30 más”). El truco: llame \(n\) al <strong>número de rebajas</strong> (o de aumentos) y escriba todo en función de \(n\). Casi siempre queda una cuadrática.</p>
+    <div class="ex">
+      <div class="t">Ejemplo resuelto</div>
+      <p class="q">Un cine vende 300 entradas a ₡4000. Por cada ₡200 de rebaja vende 30 entradas más. ¿Qué precio maximiza el ingreso?</p>
+      <ol class="steps">
+        <li><div><p>\(n\) = número de rebajas de ₡200. Entonces:</p>
+          \[p=4000-200n\qquad q=300+30n\]
+          <span class="why">Compruebe con \(n=1\): precio 3800, se venden 330. Coincide con el enunciado.</span></div></li>
+        <li><div>\[\begin{aligned}I&=pq=(4000-200n)(300+30n)\\ &=-6000n^2+60\,000n+1\,200\,000\end{aligned}\]</div></li>
+        <li><div><p>Cuadrática con \(a<0\) → máximo en el vértice: \(n_v\) \(=\dfrac{-60\,000}{2(-6000)}\) \(=5\).</p></div></li>
+        <li><div><p>Responder: \(p=4000-200(5)=3000\); \(q=450\); \(I=3000\cdot450\) \(=1\,350\,000\).</p></div></li>
+      </ol>
+      <span class="ans">Precio de ₡3000 (5 rebajas); ingreso máximo ₡1 350 000.</span>
+      <p class="small"><strong>Trampa del libro (#167):</strong> si el vértice da un \(n\) negativo (o mayor que la capacidad), no se puede usar. Si el problema solo permite aumentos (\(n\ge0\)) y el vértice es \(n=-2\), el mejor valor permitido es \(n=0\): se deja el precio como está.</p>
+    </div>
+
+    <h3>Tipo 3 · Pedidos y lotes de producción</h3>
+    <p>Pedidos grandes = mucho inventario guardado (caro). Pedidos pequeños = muchos pedidos (también caro). Se busca el punto medio.</p>
+    <div class="key"><span class="lbl">El modelo del libro</span>
+      <p>\(D\) = demanda por periodo, \(x\) = unidades por pedido, \(n\) = pedidos por periodo, <em>CFP</em> = costo fijo de un pedido, <em>CUI</em> = costo de guardar una unidad por periodo.</p>
+      \[nx=D\qquad\quad\text{inventario promedio}=\frac x2\]\[C=\text{CUI}\cdot\frac x2+\text{CFP}\cdot n\]
+      <p>Fórmula para verificar (ejercicio 180): \(\ x\) \(=\sqrt{\dfrac{2\cdot\text{CFP}\cdot D}{\text{CUI}}}\)</p>
+    </div>
+    <div class="ex">
+      <div class="t">Ejemplo resuelto</div>
+      <p class="q">Una ferretería vende 6000 sacos de cemento al mes. Guardar un saco cuesta ₡80 al mes y cada pedido cuesta ₡15 000. ¿De qué tamaño y con qué frecuencia debe pedir?</p>
+      <ol class="steps">
+        <li><div><p>\(x\) = sacos por pedido, \(n\) = pedidos por mes. Demanda: \(nx=6000\Rightarrow n\) \(=6000x^{-1}\).</p></div></li>
+        <li><div>\[\begin{aligned}C&=80\cdot\frac x2+15\,000\,n\\ &= 40x+15\,000(6000x^{-1})\\ &=40x+90\,000\,000\,x^{-1}\end{aligned}\]</div></li>
+        <li><div>\[\begin{gathered}C'=40-90\,000\,000\,x^{-2}=0\\ x^2=2\,250\,000\ \Rightarrow\ x=1500\end{gathered}\]
+          <p>\(C''\) \(=180\,000\,000\,x^{-3}>0\) → mínimo. (Fórmula: \(\sqrt{2\cdot15\,000\cdot6000/80}\) \(=1500\) ✓)</p></div></li>
+        <li><div><p>Frecuencia: \(n=6000/1500=4\) pedidos al mes → uno cada \(30/4=7.5\) días (el libro usa meses de 30 días y años de 360).</p></div></li>
+      </ol>
+      <span class="ans">Pedir 1500 sacos cada 7.5 días.</span>
+      <p class="small">Dato para verificar: en el óptimo, el costo de inventario (\(40\cdot1500\) = ₡60 000) es igual al costo de pedidos (\(15\,000\cdot4\) = ₡60 000). Si le da muy distinto, revise. Si hay una capacidad máxima menor que el óptimo (ejercicio 177), se pide justo esa capacidad.</p>
+    </div>
+
+    <h3>Tipo 4 · Geometría</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Figura</th><th>Fórmulas</th></tr></thead>
+        <tbody>
+          <tr><td>Rectángulo (largo \(\ell\), ancho \(a\))</td><td>\(A=\ell a\qquad P=2\ell+2a\)</td></tr>
+          <tr><td>Círculo (radio \(r\))</td><td>\(A=\pi r^2\qquad C=2\pi r\)</td></tr>
+          <tr><td>Triángulo / rectángulo</td><td>\(A=\tfrac12bh\qquad c^2\) \(=a^2+b^2\)</td></tr>
+          <tr><td>Caja (prisma)</td><td>\(V=\ell\cdot a\cdot h\)</td></tr>
+          <tr><td>Cilindro</td><td>\(V=\pi r^2h\qquad\) pared lateral \(=2\pi rh\qquad\) tapa o fondo \(=\pi r^2\)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ex">
+      <div class="t">Ejemplo resuelto</div>
+      <p class="q">De un cartón de 30 cm × 30 cm se cortan cuadrados iguales en las esquinas y se doblan los lados para hacer una caja sin tapa. ¿Qué tamaño de cuadrado da el volumen máximo?</p>
+      <ol class="steps">
+        <li><div><p>\(x\) = lado del cuadrado cortado = altura de la caja. La base queda de \((30-2x)\times(30-2x)\).</p></div></li>
+        <li><div>\[V=x(30-2x)^2,\qquad 0\le x\le15\]
+          <span class="why">No se puede cortar más de la mitad del cartón: si \(x=15\), la base mide 0.</span></div></li>
+        <li><div><p>Derivada (producto y cadena), factorizada:</p>
+          \[\begin{aligned}V'&=(30-2x)^2+x\cdot2(30-2x)(-2)\\ &=(30-2x)(30-6x)\end{aligned}\]\[x=15\quad\text{o}\quad x=5\]</div></li>
+        <li><div><p>Tabla en el intervalo cerrado \([0,15]\): \(V(0)=0\), \(V(5)=5\cdot20^2=2000\), \(V(15)=0\).</p></div></li>
+      </ol>
+      <span class="ans">Cortar cuadrados de 5 cm; la caja mide 20 × 20 × 5 cm y tiene 2000 cm³.</span>
+    </div>
+
+    <p class="ojo-title">¡Ojo! Errores comunes</p>
+    <div class="errs">
+      <div class="err"><h4>Derivar con dos variables</h4>
+        <div class="no">\(U=pq-C\) → “\(U'=p+q-\dots\)”</div>
+        <div class="si">Antes de derivar, la función tiene que quedar en <strong>una sola</strong> variable (paso 4).</div></div>
+      <div class="err"><h4>Responder otra cosa</h4>
+        <div class="no">Preguntan el precio y se responde “\(q=160\)”.</div>
+        <div class="si">Relea la pregunta. Si piden precio, sustituya en la demanda. Si piden la utilidad máxima, evalúe \(U\).</div></div>
+      <div class="err"><h4>No verificar si es máximo o mínimo</h4>
+        <div class="no">“\(U'=0\) en \(q=160\), listo.”</div>
+        <div class="si">Un crítico puede ser máximo, mínimo o nada. Use \(U''\), la tabla o el signo de \(a\).</div></div>
+      <div class="err"><h4>Ignorar el dominio</h4>
+        <div class="no">Longitud negativa, más pasajeros que la capacidad, o un vértice en \(n=-2\) cuando solo se permiten aumentos.</div>
+        <div class="si">Escriba el dominio desde el paso 2 y revise que la respuesta caiga ahí.</div></div>
+      <div class="err"><h4>Inventario promedio</h4>
+        <div class="no">Costo de inventario \(=\text{CUI}\cdot x\)</div>
+        <div class="si">El inventario baja de \(x\) a 0, así que el promedio es \(x/2\): costo \(=\text{CUI}\cdot\dfrac x2\).</div></div>
+      <div class="err"><h4>Mezclar periodos</h4>
+        <div class="no">Demanda mensual con costo de almacenamiento anual.</div>
+        <div class="si">Pase todo al mismo periodo antes de armar \(C\).</div></div>
+    </div>
+
+    <h3>Práctica 3.5</h3>
+    <div class="practice" data-sec="s35">
+      <div class="prob" data-id="p35-135"><div class="head"><span class="tag">Libro #135</span><div class="txt"><p>Dos números cuya suma sea 200 y cuyo producto sea máximo.</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(x+y=200\Rightarrow y\) \(=200-x\). \(P=x(200-x)=-x^2+200x\). Vértice \(x=100\), \(a<0\) → máximo. <strong>100 y 100.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-137"><div class="head"><span class="tag">Libro #137</span><div class="txt"><p>Dos números positivos con producto 192 y suma mínima.</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(y=192/x\). \(S=x+192x^{-1}\). \(S'=1-192x^{-2}=0\) \(\Rightarrow x\) \(=\sqrt{192}=8\sqrt3\). \(S''=384x^{-3}>0\) → mínimo. <strong>\(8\sqrt3\) y \(8\sqrt3\)</strong> (≈ 13.86 cada uno).</p></div></details></div></div>
+      <div class="prob" data-id="p35-141"><div class="head"><span class="tag">Libro #141</span><div class="txt"><p>La ganancia (miles de colones por semana) es \(U=-0.01x^2+9x-1296\). ¿Cuántas cajas para ganancia máxima? ¿Cuánto es?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>Vértice: \(x=\dfrac{-9}{2(-0.01)}\) \(=450\). \(U(450)=-2025+4050-1296\) \(=729\) miles. <strong>450 cajas; ₡729 000.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-143"><div class="head"><span class="tag">Libro #143</span><div class="txt"><p>\(\bar C=0.25q+3+400q^{-1}\). ¿Con qué producción es mínimo el costo promedio y cuánto es?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(\bar C'=0.25-400q^{-2}\) \(=0\Rightarrow q^2=1600\) \(\Rightarrow q=40\). \(\bar C''=800q^{-3}>0\). \(\bar C(40)=10+3+10=23\). <strong>40 unidades; 23.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-147"><div class="head"><span class="tag">Libro #147</span><div class="txt"><p>\(C=0.5q^3+100q+500\) y demanda \(p=450-2q\). ¿Cuántas unidades maximizan la utilidad?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(U\) \(=(450-2q)q-(0.5q^3+100q+500)\) \(=-0.5q^3-2q^2+350q-500\).</p><p>\(U'=-1.5q^2-4q+350=0\) \(\Rightarrow q\) \(=\dfrac{-4+\sqrt{16+2100}}{3}\) \(=14\) (la otra raíz es negativa). \(U''=-3q-4<0\). <strong>14 unidades.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-151"><div class="head"><span class="tag">Libro #151</span><div class="txt"><p>Demanda \(q=450e^{-0.25p}\). ¿Qué precio maximiza el ingreso?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(I=pq=450pe^{-0.25p}\). \(I'\) \(=450e^{-0.25p}(1-0.25p)\) \(=0\Rightarrow p=4\) (la exponencial nunca es 0). Signo \(+\) antes y \(-\) después → máximo. <strong>\(p=4\).</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-158"><div class="head"><span class="tag">Libro #158</span><div class="txt"><p>Una revista vende 10 000 ejemplares a ₡1500. Vende 100 más por cada ₡10 que baje el precio. ¿Qué precio maximiza el ingreso?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(n\) rebajas de ₡10: \(p=1500-10n\), \(q=10\,000+100n\).</p><p>\(I\) \(=-1000n^2+50\,000n+15\,000\,000\). Vértice \(n=25\). <strong>Precio ₡1250.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-160"><div class="head"><span class="tag">Libro #160</span><div class="txt"><p>Con 120 árboles por hectárea, cada uno da 600 naranjas. Por cada árbol extra, cada árbol da 3 naranjas menos. ¿Cuántos árboles plantar?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(n\) árboles extra: \(N=(120+n)(600-3n)\) \(=-3n^2+240n+72\,000\). Vértice \(n=40\). <strong>160 árboles.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-167"><div class="head"><span class="tag">Libro #167</span><div class="txt"><p>Tarifa de $1.80, 5000 usuarios diarios. Por cada $0.20 de <em>incremento</em> hay mil pasajeros menos. ¿Qué tarifa maximiza el ingreso?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(n\) aumentos: \(I\) \(=(1.80+0.20n)(5000-1000n)\) \(=-200n^2-800n+9000\). Vértice \(n=\dfrac{800}{-400}=-2\).</p><p>Pero \(n=-2\) sería <em>bajar</em> la tarifa, y el problema solo considera aumentos (\(n\ge0\)). Para \(n\ge0\) el ingreso solo baja, así que lo mejor es \(n=0\). <strong>Dejar la tarifa en $1.80.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-168"><div class="head"><span class="tag">Libro #168</span><div class="txt"><p>Demanda de 12 000 bicicletas por año; inventario $25 por bicicleta al año; cada pedido $500. ¿Tamaño y frecuencia?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(C\) \(=25\cdot\frac x2+500\cdot\frac{12\,000}{x}\) \(=12.5x+6\,000\,000x^{-1}\). \(C'=0\Rightarrow x\) \(=\sqrt{480\,000}\) \(\approx692.8\).</p><p>\(n=12\,000/692.8\) \(\approx17.32\) pedidos al año → cada \(360/17.32\approx20.8\) días. <strong>Aprox. 693 bicicletas cada 21 días.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-183"><div class="head"><span class="tag">Libro #183</span><div class="txt"><p>Con 120 m de cerca se rodea un terreno rectangular junto a un muro (el muro es un lado). ¿Dimensiones de área máxima?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(x\) = lados perpendiculares al muro, \(y\) = lado paralelo. \(2x+y=120\Rightarrow y\) \(=120-2x\).</p><p>\(A=x(120-2x)=-2x^2+120x\). Vértice \(x=30\), \(y=60\). <strong>30 m perpendicular al muro, 60 m paralelo.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-189"><div class="head"><span class="tag">Libro #189</span><div class="txt"><p>Caja sin tapa, base cuadrada, volumen 32 dm³. ¿Dimensiones que gastan menos material?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(x^2y=32\Rightarrow y\) \(=32/x^2\). Material \(M=x^2+4xy=x^2+128x^{-1}\).</p><p>\(M'=2x-128x^{-2}=0\) \(\Rightarrow x^3=64\) \(\Rightarrow x=4\), \(y=2\). <strong>Base 4 dm, altura 2 dm.</strong></p></div></details></div></div>
+      <div class="prob" data-id="p35-190"><div class="head"><span class="tag">Libro #190</span><div class="txt"><p>Cartón de 10 cm × 16 cm; se cortan cuadrados en las esquinas. ¿Qué tamaño da el máximo volumen?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(V=x(10-2x)(16-2x)\) \(=4x^3-52x^2+160x\), con \(0\le x\le5\).</p><p>\(V'=12x^2-104x+160\) \(=4(3x-20)(x-2)\). \(x=20/3\) queda fuera. Tabla: \(V(0)=0\), \(V(2)=144\), \(V(5)=0\). <strong>Cuadrados de 2 cm.</strong></p></div></details></div></div>
+    </div>
+  </section>
+
+  <!-- ====================== 3.6 ====================== -->
+  <section id="s36">
+    <div class="eyebrow"><span class="sec">3.6</span>Páginas 98–100 del libro</div>
+    <h2>Interés en tiempo continuo</h2>
+    <p class="idea">Si los intereses se suman en cada instante (no cada mes ni cada día), el dinero crece como <span class="hl">\(A=Pe^{rt}\)</span>.</p>
+    <p>Sale del límite \(\lim_{n\to\infty}P\left(1+\frac rn\right)^{nt}\) \(=Pe^{rt}\), que es una forma \(1^\infty\) de la sección 3.2.</p>
+
+    <div class="rule-grid">
+      <div><b>Monto final (valor futuro)</b>\(A=Pe^{rt}\)</div>
+      <div><b>Interés ganado</b>\(I=A-P=P(e^{rt}-1)\)</div>
+      <div><b>Tasa efectiva anual</b>\(e^{r}-1\)<br><span class="small muted">Una tasa \(r\) continua equivale a \(e^r-1\) compuesta anual.</span></div>
+    </div>
+    <p class="small muted">\(P\) = inversión inicial · \(r\) = tasa anual <strong>en decimal</strong> (13 % → 0.13) · \(t\) = años.</p>
+
+    <h3>Las cuatro preguntas posibles</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Le piden</th><th>Despeje</th><th>Cómo se llega</th></tr></thead>
+        <tbody>
+          <tr><td class="k">A (monto final)</td><td>\(A=Pe^{rt}\)</td><td>Sustituir directo</td></tr>
+          <tr><td class="k">P (cuánto invertir hoy)</td><td>\(P=Ae^{-rt}\)</td><td>Dividir entre \(e^{rt}\)</td></tr>
+          <tr><td class="k">t (cuánto tiempo)</td><td>\(t=\dfrac{\ln(A/P)}{r}\)</td><td>Dividir entre \(P\), luego \(\ln\) a ambos lados</td></tr>
+          <tr><td class="k">r (qué tasa)</td><td>\(r=\dfrac{\ln(A/P)}{t}\)</td><td>Igual que el anterior</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 1 · monto, interés y tasa efectiva</div>
+      <p class="q">Se invierten ₡1 000 000 al 8 % anual compuesto continuamente durante 5 años.</p>
+      <ol class="steps">
+        <li><div>\[\begin{aligned}A&=1\,000\,000\,e^{0.08\times5}\\ &=1\,000\,000\,e^{0.4}\approx 1\,491\,824.70\end{aligned}\]<p>Monto final: ₡1 491 824.70.</p></div></li>
+        <li><div><p>Interés: \(I=A-P\approx 491\,824.70\), o sea ₡491 824.70.</p></div></li>
+        <li><div><p>Tasa efectiva anual: \(e^{0.08}-1\) \(\approx0.0833=8.33\%\). El 8 % continuo rinde lo mismo que un 8.33 % compuesto una vez al año.</p></div></li>
+      </ol>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 2 · despejar el tiempo</div>
+      <p class="q">¿Cuánto tarda una inversión en triplicarse al 10 % continuo?</p>
+      <ol class="steps">
+        <li><div><p>Triplicarse: \(A=3P\). \(\ 3P=Pe^{0.1t}\) \(\Rightarrow 3=e^{0.1t}\) (se cancela \(P\)).</p></div></li>
+        <li><div><p>Logaritmo natural a ambos lados: \(\ln3=0.1t\Rightarrow t\) \(=\dfrac{\ln3}{0.1}\) \(\approx10.986\) años.</p></div></li>
+        <li><div><p>Pasar a años, meses y días (como el libro: meses de 30 días): \(0.986\times12=11.83\) meses; \(0.83\times30\approx25\) días.</p></div></li>
+      </ol>
+      <span class="ans">≈ 10.986 años: 10 años, 11 meses y 25 días.</span>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 3 · despejar P y r</div>
+      <p class="q">(a) ¿Cuánto invertir hoy al 5 % para tener $10 000 en 3 años? (b) Si ₡200 000 crecen a ₡260 000 en 4 años, ¿a qué tasa?</p>
+      <p>(a) \(P\) \(=10\,000\,e^{-0.05\times3}\) \(=10\,000\,e^{-0.15}\) \(\approx\$8607.08\).</p>
+      <p>(b) \(260\,000\) \(=200\,000\,e^{4r}\) \(\Rightarrow1.3=e^{4r}\) \(\Rightarrow\ln1.3=4r\) \(\Rightarrow r\) \(\approx0.06559=6.559\%\).</p>
+    </div>
+
+    <div class="ex">
+      <div class="t">Ejemplo resuelto 4 · comparar opciones (como el #207)</div>
+      <p class="q">¿Qué deja más interés en un año: 20 % continuo, 21 % anual o 21 % trimestral?</p>
+      <p>Compare las tasas efectivas anuales:</p>
+      <ul>
+        <li>20 % continuo: \(e^{0.20}-1\approx22.14\%\)</li>
+        <li>21 % compuesto anual: \(21\%\)</li>
+        <li>21 % compuesto trimestral: \(\left(1+\frac{0.21}{4}\right)^4-1\) \(\approx22.71\%\)</li>
+      </ul>
+      <span class="ans">Contra el 21 % anual gana el 20 % continuo; contra el 21 % trimestral gana el trimestral.</span>
+    </div>
+
+    <p class="ojo-title">¡Ojo! Errores comunes</p>
+    <div class="errs">
+      <div class="err"><h4>Usar el porcentaje como número entero</h4>
+        <div class="no">\(e^{8\cdot5}\)</div>
+        <div class="si">\(e^{0.08\cdot5}\). Siempre en decimal.</div></div>
+      <div class="err"><h4>Sacar logaritmo sin despejar primero</h4>
+        <div class="no">\(\ln(20\,000\,e^{10r})\) \(=20\,000\cdot10r\)</div>
+        <div class="si">Primero divida: \(e^{10r}=2\). Después: \(10r=\ln2\).</div></div>
+      <div class="err"><h4>Confundir monto con interés</h4>
+        <div class="no">“El interés debe ser ₡1 000 000” → \(Pe^{rt}=1\,000\,000\)</div>
+        <div class="si">Interés \(=A-P\): \(P(e^{rt}-1)=1\,000\,000\) (libro #201).</div></div>
+      <div class="err"><h4>Tiempo en meses con tasa anual</h4>
+        <div class="no">18 meses → \(t=18\)</div>
+        <div class="si">\(t=1.5\) años.</div></div>
+      <div class="err"><h4>Tasa efectiva sin restar 1</h4>
+        <div class="no">Tasa efectiva \(=e^{0.13}=1.1388\)</div>
+        <div class="si">\(e^{0.13}-1=0.1388=13.88\%\).</div></div>
+      <div class="err"><h4>Redondear antes de tiempo</h4>
+        <div class="no">\(e^{0.48}\approx1.6\) y después multiplicar por 500 000.</div>
+        <div class="si">Haga toda la cuenta en la calculadora y redondee solo al final. Con montos grandes, el error se nota.</div></div>
+    </div>
+
+    <h3>Práctica 3.6</h3>
+    <div class="practice" data-sec="s36">
+      <div class="prob" data-id="p36-196"><div class="head"><span class="tag">Libro #196</span><div class="txt"><p>₡500 000 al 16 %. ¿Cuánto valdrá en tres años?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(A\) \(=500\,000\,e^{0.16\times3}\) \(=500\,000\,e^{0.48}\) \(\approx\) <strong>₡808 037.20</strong></p></div></details></div></div>
+      <div class="prob" data-id="p36-197"><div class="head"><span class="tag">Libro #197</span><div class="txt"><p>$22 500 al 3 %. ¿Interés ganado en cinco años?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(I=22\,500(e^{0.15}-1)\) \(\approx\) <strong>$3641.27</strong></p></div></details></div></div>
+      <div class="prob" data-id="p36-198"><div class="head"><span class="tag">Libro #198</span><div class="txt"><p>¿Cuánto tiempo para que $150 000 al 4.5 % lleguen a $200 000?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(e^{0.045t}\) \(=\dfrac{200\,000}{150\,000}\) \(=\dfrac43\Rightarrow t\) \(=\dfrac{\ln(4/3)}{0.045}\) \(\approx\) <strong>6.393 años</strong> (6 años, 4 meses, 21 días).</p></div></details></div></div>
+      <div class="prob" data-id="p36-200"><div class="head"><span class="tag">Libro #200</span><div class="txt"><p>¿Cuánto invertir hoy al 2.4 % para tener $60 000 en 4.5 años?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(P\) \(=60\,000\,e^{-0.024\times4.5}\) \(=60\,000\,e^{-0.108}\) \(\approx\) <strong>$53 857.66</strong></p></div></details></div></div>
+      <div class="prob" data-id="p36-201"><div class="head"><span class="tag">Libro #201</span><div class="txt"><p>¿Cuánto invertir hoy al 14.8 % para que en siete años el <em>interés</em> total sea de un millón de colones?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(P(e^{0.148\times7}-1)\) \(=1\,000\,000\) \(\Rightarrow P\) \(=\dfrac{1\,000\,000}{e^{1.036}-1}\) \(\approx\) <strong>₡550 078.38</strong></p></div></details></div></div>
+      <div class="prob" data-id="p36-202"><div class="head"><span class="tag">Libro #202</span><div class="txt"><p>¿A qué tasa continua deben invertirse $50 000 para ganar $4000 de interés en dos años?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(A=54\,000\). \(e^{2r}=1.08\) \(\Rightarrow r\) \(=\dfrac{\ln1.08}{2}\) \(\approx0.03848=\) <strong>3.848 %</strong></p></div></details></div></div>
+      <div class="prob" data-id="p36-204"><div class="head"><span class="tag">Libro #204</span><div class="txt"><p>¿Cuál es la tasa efectiva anual de un 6 % compuesto continuamente?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(e^{0.06}-1\approx0.06184=\) <strong>6.184 %</strong></p></div></details></div></div>
+      <div class="prob" data-id="p36-206"><div class="head"><span class="tag">Libro #206</span><div class="txt"><p>Al 12 % continuo, ¿cuánto tarda una inversión en duplicarse?</p></div></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body"><p>\(2=e^{0.12t}\) \(\Rightarrow t\) \(=\dfrac{\ln2}{0.12}\) \(\approx\) <strong>5.776 años</strong> (5 años, 9 meses, 9 días).</p></div></details></div></div>
+    </div>
+  </section>
+
+  <!-- ====================== SIMULACRO ====================== -->
+  <section id="simulacro">
+    <div class="eyebrow"><span class="sec">Examen</span>Todo el capítulo mezclado</div>
+    <h2>Simulacro de examen</h2>
+    <p>Problemas nuevos (no están en el libro), con el estilo de una prueba. Hágalos en papel, sin abrir soluciones, y después califíquese. Si un problema le sale mal, vuelva a la sección que dice la etiqueta.</p>
+
+    <div class="timer" role="group" aria-label="Cronómetro">
+      <span class="clock" id="clk">90:00</span>
+      <button type="button" id="clk-go">Iniciar</button>
+      <button type="button" id="clk-reset">Reiniciar</button>
+      <span class="note">Tiempo sugerido: 90 minutos para los 9 problemas.</span>
+    </div>
+
+    <div class="practice" data-sec="sim">
+      <div class="prob" data-id="sim-1"><div class="head"><span class="tag">3.1</span><div class="txt"><p><strong>1.</strong> El costo de producir \(q\) unidades es \(C(q)\) \(=0.01q^3-0.6q^2+15q+800\). (a) Aproxime el costo de la unidad número 21 e interprete. (b) Calcule el costo promedio marginal en \(q=20\).</p></div><span class="pts">10 pts</span></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body">
+          <p>(a) \(C'(q)=0.03q^2-1.2q+15\). Unidad 21 → \(C'(20)=12-24+15=3\). Producir la unidad 21 cuesta aproximadamente 3.</p>
+          <p>(b) \(\bar C\) \(=0.01q^2-0.6q+15+800q^{-1}\) \(\Rightarrow\bar C'\) \(=0.02q-0.6-800q^{-2}\). \(\bar C'(20)=0.4-0.6-2\) \(=-2.2\): al producir la unidad 21 el costo promedio baja unos 2.2 por unidad.</p></div></details></div></div>
+      <div class="prob" data-id="sim-2"><div class="head"><span class="tag">3.2</span><div class="txt"><p><strong>2.</strong> Calcule: (a) \(\displaystyle\lim_{x\to1}\frac{x^3-1}{\ln x}\) &nbsp; (b) \(\displaystyle\lim_{x\to\infty}\frac{(\ln x)^2}{x}\) &nbsp; (c) \(\displaystyle\lim_{x\to0^+}(1+2x)^{1/x}\)</p></div><span class="pts">15 pts</span></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body">
+          <p>(a) \(\tfrac00\). \(\LH\ \dfrac{3x^2}{1/x}\) \(=3x^3\to3\).</p>
+          <p>(b) \(\tfrac\infty\infty\). \(\LH\ \dfrac{2\ln x\cdot\frac1x}{1}\) \(=\dfrac{2\ln x}{x}\\) \(\LH\ \dfrac{2/x}{1}\) \(\to0\).</p>
+          <p>(c) \(1^\infty\). \(\ln L\) \(=\lim\dfrac{\ln(1+2x)}{x}\) \(\LH\lim\dfrac{2/(1+2x)}{1}\) \(=2\Rightarrow L=e^2\).</p></div></details></div></div>
+      <div class="prob" data-id="sim-3"><div class="head"><span class="tag">3.3 · 3.4</span><div class="txt"><p><strong>3.</strong> Para \(f(x)=x^4-8x^2+3\), encuentre los intervalos de crecimiento y decrecimiento y los extremos locales.</p></div><span class="pts">15 pts</span></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body">
+          <p>\(f'=4x^3-16x=4x(x-2)(x+2)\). Críticos: \(-2,0,2\). Pruebe \(-3,-1,1,3\): \(-,+,-,+\).</p>
+          <p>Decrece en \(]-\infty,-2]\) y en \([0,2]\); crece en \([-2,0]\) y en \([2,\infty[\).</p>
+          <p>Mín en \((-2,-13)\) y en \((2,-13)\); máx en \((0,3)\).</p></div></details></div></div>
+      <div class="prob" data-id="sim-4"><div class="head"><span class="tag">3.4.3</span><div class="txt"><p><strong>4.</strong> Extremos absolutos de \(g(x)=x^3-12x+1\) en \([-3,5]\).</p></div><span class="pts">10 pts</span></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body">
+          <p>\(g'=3x^2-12=0\) \(\Rightarrow x=\pm2\), los dos dentro del intervalo.</p>
+          <p>Tabla: \(g(-3)=10\), \(g(-2)=17\), \(g(2)=-15\), \(g(5)=66\).</p>
+          <p>Máx absoluto 66 en \(x=5\); mín absoluto −15 en \(x=2\). (Note que el máximo está en un borde, no en el crítico.)</p></div></details></div></div>
+      <div class="prob" data-id="sim-5"><div class="head"><span class="tag">3.5 · negocio</span><div class="txt"><p><strong>5.</strong> Demanda \(p=90-0.02q\); costos fijos 12 000 y costo unitario 30. ¿Qué precio maximiza la utilidad y cuánto es la utilidad máxima?</p></div><span class="pts">10 pts</span></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body">
+          <p>\(U\) \(=(90-0.02q)q-(12\,000+30q)\) \(=-0.02q^2+60q-12\,000\).</p>
+          <p>Vértice \(q=\dfrac{-60}{-0.04}=1500\) (máximo, \(a<0\)). Precio: \(p=90-30=60\). \(U(1500)\) \(=-45\,000+90\,000-12\,000\) \(=33\,000\).</p></div></details></div></div>
+      <div class="prob" data-id="sim-6"><div class="head"><span class="tag">3.5 · aumento</span><div class="txt"><p><strong>6.</strong> Un gimnasio tiene 400 socios que pagan ₡25 000 al mes. Por cada ₡1000 de aumento en la cuota se van 10 socios. ¿Qué cuota maximiza el ingreso mensual? ¿Cuánto es?</p></div><span class="pts">10 pts</span></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body">
+          <p>\(n\) aumentos: \(I\) \(=(25\,000+1000n)(400-10n)\) \(=-10\,000n^2+150\,000n+10\,000\,000\).</p>
+          <p>Vértice \(n=7.5\). Cuota ₡32 500, con 325 socios. Ingreso máximo ₡10 562 500.</p>
+          <p class="small muted">Aquí \(n=7.5\) tiene sentido porque la cuota puede subir de a ₡500. Si el profe exige \(n\) entero, compare \(n=7\) y \(n=8\): los dos dan ₡10 560 000.</p></div></details></div></div>
+      <div class="prob" data-id="sim-7"><div class="head"><span class="tag">3.5 · pedidos</span><div class="txt"><p><strong>7.</strong> Una panadería usa 9000 kg de harina al año. Guardar un kilo cuesta $2 al año y cada pedido cuesta $40. ¿De qué tamaño y cada cuánto deben ser los pedidos?</p></div><span class="pts">10 pts</span></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body">
+          <p>\(C\) \(=2\cdot\frac x2+40\cdot\frac{9000}{x}\) \(=x+360\,000x^{-1}\). \(C'=1-360\,000x^{-2}=0\) \(\Rightarrow x=600\). \(C''>0\).</p>
+          <p>\(n=9000/600=15\) pedidos al año → cada \(360/15=24\) días. Pedidos de 600 kg cada 24 días.</p>
+          <p class="small muted">Verificación: inventario \(=600\cdot1=\$600\), pedidos \(=15\cdot40=\$600\). Iguales ✓</p></div></details></div></div>
+      <div class="prob" data-id="sim-8"><div class="head"><span class="tag">3.5 · geometría</span><div class="txt"><p><strong>8.</strong> Una lata cilíndrica con tapa debe contener 1000 cm³. ¿Qué radio y altura usan la menor cantidad de material?</p></div><span class="pts">10 pts</span></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body">
+          <p>\(\pi r^2h=1000\) \(\Rightarrow h\) \(=\dfrac{1000}{\pi r^2}\). Material: \(A=2\pi r^2+2\pi rh\) \(=2\pi r^2+2000r^{-1}\).</p>
+          <p>\(A'=4\pi r-2000r^{-2}=0\) \(\Rightarrow r^3\) \(=\dfrac{500}{\pi}\) \(\Rightarrow r\) \(\approx5.42\) cm. \(A''=4\pi+4000r^{-3}>0\) → mínimo.</p>
+          <p>\(h\) \(=\dfrac{1000}{\pi(5.42)^2}\) \(\approx10.84\) cm. (Curioso: la altura es igual al diámetro.)</p></div></details></div></div>
+      <div class="prob" data-id="sim-9"><div class="head"><span class="tag">3.6</span><div class="txt"><p><strong>9.</strong> (a) ¿Cuánto tarda ₡2 000 000 en convertirse en ₡3 000 000 al 9 % compuesto continuamente? Dé años, meses y días. (b) ¿Cuál es la tasa efectiva anual?</p></div><span class="pts">10 pts</span></div>
+        <div class="prob-foot"><details class="sol"><summary>Ver solución</summary><div class="body">
+          <p>(a) \(e^{0.09t}=1.5\) \(\Rightarrow t\) \(=\dfrac{\ln1.5}{0.09}\) \(\approx4.505\) años → \(0.505\times12=6.06\) meses → \(0.06\times30\approx2\) días: 4 años, 6 meses y 2 días.</p>
+          <p>(b) \(e^{0.09}-1\approx9.417\%\).</p></div></details></div></div>
+    </div>
+  </section>
+
+  <!-- ====================== RESUMEN ====================== -->
+  <section id="resumen">
+    <div class="eyebrow"><span class="sec">★</span>Para repasar la noche antes</div>
+    <h2>Hoja resumen</h2>
+    <div class="cheat">
+      <div><h4><span class="tag">3.1</span>Marginal</h4>
+        <ul><li>\(C'(q)\) ≈ costo de la unidad \(q+1\)</li><li>Unidad \(N\) → evaluar en \(N-1\)</li><li>\(I=pq,\ U=I-C,\ \bar C=C/q\)</li><li>\(\bar C'\): primero dividir, después derivar</li></ul></div>
+      <div><h4><span class="tag">3.2</span>L’Hôpital</h4>
+        <ul><li>Solo con \(\tfrac00\) o \(\tfrac\infty\infty\): \(\lim\frac fg\) \(=\lim\frac{f'}{g'}\)</li><li>\(0\cdot\infty\) → \(\dfrac{u}{v^{-1}}\)</li><li>\(\infty-\infty\) → factorizar o común denominador</li><li>\(1^\infty,0^0,\infty^0\) → \(\ln L\), luego \(L=e^{\ln L}\)</li><li>\(\ln x\ll x^n\ll e^x\)</li></ul></div>
+      <div><h4><span class="tag">3.3</span>Crece / decrece</h4>
+        <ul><li>\(f'>0\) crece, \(f'<0\) decrece</li><li>Mapa de signos de \(f'\): ceros + donde no existe + fuera del dominio</li><li>Intervalos separados con “y”, nunca \(\cup\)</li></ul></div>
+      <div><h4><span class="tag">3.4</span>Extremos</h4>
+        <ul><li>Crítico: \(f'=0\) o no existe (y \(c\) en el dominio)</li><li>\(+\to-\) máx · \(-\to+\) mín</li><li>\(f''<0\) máx ∩ · \(f''>0\) mín ∪ · \(=0\) no dice</li><li>Absolutos en \([a,b]\): tabla con críticos y bordes</li><li>El valor se calcula en \(f\), no en \(f'\)</li></ul></div>
+      <div><h4><span class="tag">3.5</span>Optimización</h4>
+        <ul><li>Variables → objetivo → relaciones → una variable → optimizar → responder</li><li>Cuadrática: \(x_v=-b/2a\)</li><li>Aumento/reducción: \(n\) = número de cambios</li><li>Pedidos: \(C\) \(=\text{CUI}\frac x2+\text{CFP}\cdot n\), \(nx=D\), \(x\) \(=\sqrt{2\,\text{CFP}\,D/\text{CUI}}\)</li></ul></div>
+      <div><h4><span class="tag">3.6</span>Interés continuo</h4>
+        <ul><li>\(A=Pe^{rt}\), \(\ I=A-P\)</li><li>\(P=Ae^{-rt}\), \(\ t=\frac{\ln(A/P)}{r}\), \(\ r=\frac{\ln(A/P)}{t}\)</li><li>Tasa efectiva: \(e^r-1\)</li><li>\(r\) en decimal, \(t\) en años</li></ul></div>
+    </div>
+
+    <h3>Lista para el día del examen</h3>
+    <ul class="final">
+      <li>Escriba todos los pasos: aunque el resultado final salga mal, los pasos dan puntos.</li>
+      <li>Antes de usar L’Hôpital, sustituya y escriba la forma (\(\tfrac00\), \(\tfrac\infty\infty\)…).</li>
+      <li>Factorice \(f'\); no divida entre la variable.</li>
+      <li>Al dar un extremo, escriba el punto completo \((x,f(x))\) y diga si es máximo o mínimo.</li>
+      <li>En optimización, escriba el dominio y responda exactamente lo que preguntan, con unidades.</li>
+      <li>En interés continuo, la tasa va en decimal y la calculadora se usa hasta el final, sin redondear en medio.</li>
+    </ul>
+  </section>
+
+  <footer>Basado en el capítulo 3 de <em>Cálculo para Administración</em>, Luis Alejandro Acuña Prado (2025). Las respuestas de los ejercicios marcados “Libro #” coinciden con el apéndice B del libro. Su progreso se guarda solo en este navegador.</footer>
+  </main>
+</div>
+
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']],
+    macros: { lim: '\\operatorname*{lím}', LH: '\\overset{\\scriptscriptstyle\\text{L\'H}}{=}' }
+  },
+  svg: { fontCache: 'global' },
+  options: { enableMenu: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" defer></script>
+<script>
+(function(){
+  /* ---------- progreso ---------- */
+  var KEY = 'cap3-aplicaciones-progreso';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e) { state = {}; }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+  var probs = Array.prototype.slice.call(document.querySelectorAll('.prob'));
+  probs.forEach(function(p){
+    var id = p.getAttribute('data-id');
+    var foot = p.querySelector('.prob-foot');
+    var box = document.createElement('div'); box.className = 'chk';
+    box.innerHTML = '<button type="button" class="y" aria-pressed="false">✓ Me salió</button><button type="button" class="n" aria-pressed="false">↺ Repasar</button>';
+    foot.appendChild(box);
+    var by = box.querySelector('.y'), bn = box.querySelector('.n');
+    function paint(){
+      var v = state[id];
+      by.setAttribute('aria-pressed', v === 'ok'); bn.setAttribute('aria-pressed', v === 'no');
+      p.classList.toggle('ok', v === 'ok'); p.classList.toggle('no', v === 'no');
+    }
+    by.addEventListener('click', function(){ state[id] = state[id] === 'ok' ? undefined : 'ok'; if(!state[id]) delete state[id]; save(); paint(); tally(); });
+    bn.addEventListener('click', function(){ state[id] = state[id] === 'no' ? undefined : 'no'; if(!state[id]) delete state[id]; save(); paint(); tally(); });
+    p._paint = paint; paint();
+  });
+  function tally(){
+    var total = probs.length, ok = 0, no = 0, per = {};
+    probs.forEach(function(p){
+      var sec = p.closest('.practice').getAttribute('data-sec');
+      per[sec] = per[sec] || {t:0,o:0};
+      per[sec].t++;
+      var v = state[p.getAttribute('data-id')];
+      if (v === 'ok') { ok++; per[sec].o++; } else if (v === 'no') no++;
+    });
+    document.getElementById('pg-num').textContent = ok + '/' + total;
+    document.getElementById('pg-txt').textContent = 'ejercicios dominados' + (no ? ' · ' + no + ' para repasar' : '');
+    document.getElementById('pg-ok').style.width = (ok/total*100) + '%';
+    document.getElementById('pg-no').style.width = (no/total*100) + '%';
+    document.querySelectorAll('#tocnav a[data-sec]').forEach(function(a){
+      var s = per[a.getAttribute('data-sec')]; if (s) a.querySelector('.c').textContent = s.o + '/' + s.t;
+    });
+  }
+  tally();
+  var rs = document.getElementById('pg-reset'), armed = false;
+  rs.addEventListener('click', function(){
+    if (!armed) { armed = true; rs.textContent = '¿Seguro? Toque otra vez para borrar'; setTimeout(function(){ armed = false; rs.textContent = 'Borrar mi progreso'; }, 4000); return; }
+    state = {}; save(); probs.forEach(function(p){ p._paint(); }); tally(); armed = false; rs.textContent = 'Progreso borrado';
+  });
+
+  /* ---------- índice activo ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll('#tocnav a'));
+  var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  function onScroll(){
+    var y = window.scrollY + 120, cur = 0;
+    secs.forEach(function(s, i){ if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function(a, i){ a.classList.toggle('on', i === cur); });
+    var on = links[cur];
+    if (on && window.innerWidth <= 960) { var nav = on.parentNode; var l = on.offsetLeft - 16; if (l < nav.scrollLeft || l + on.offsetWidth > nav.scrollLeft + nav.clientWidth) nav.scrollTo({left:l, behavior:'smooth'}); }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  /* ---------- quiz de formas ---------- */
+  var OPTS = [['00','0/0'],['ii','∞/∞'],['0i','0·∞'],['mi','∞−∞'],['1i','1^∞'],['0p','0⁰'],['i0','∞⁰'],['ni','No es indeterminado']];
+  var qs = Array.prototype.slice.call(document.querySelectorAll('.qz')), right = 0, answered = 0;
+  qs.forEach(function(q){
+    var a = q.getAttribute('data-a'), box = q.querySelector('.opts'), fb = q.querySelector('.fb'), done = false;
+    OPTS.forEach(function(o){
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = o[1].replace('1^∞','1^∞'); b.setAttribute('data-v', o[0]);
+      if (o[0] === '1i') b.innerHTML = '1<sup>∞</sup>';
+      b.addEventListener('click', function(){
+        if (o[0] === a) {
+          b.classList.add('right'); fb.textContent = '✓ ' + fb.getAttribute('data-fb');
+          if (!done) { right += (q.querySelector('.wrong') ? 0 : 1); answered++; done = true; score(); }
+        } else if (!done) {
+          b.classList.add('wrong'); fb.textContent = 'No. Sustituya cada parte por separado y vea a qué tiende.';
+        }
+      });
+      box.appendChild(b);
+    });
+  });
+  function score(){ document.getElementById('qscore').textContent = answered + ' de ' + qs.length + ' respondidas · ' + right + ' al primer intento'; }
+
+  /* ---------- cronómetro ---------- */
+  var total = 90*60, left = total, timer = null, clk = document.getElementById('clk'), go = document.getElementById('clk-go');
+  function fmt(s){ var m = Math.floor(s/60), r = s%60; return (m<10?'0':'')+m+':'+(r<10?'0':'')+r; }
+  go.addEventListener('click', function(){
+    if (timer) { clearInterval(timer); timer = null; go.textContent = 'Seguir'; return; }
+    go.textContent = 'Pausar';
+    timer = setInterval(function(){ left = Math.max(0, left-1); clk.textContent = fmt(left); if (!left) { clearInterval(timer); timer = null; go.textContent = 'Iniciar'; clk.textContent = '¡Tiempo!'; } }, 1000);
+  });
+  document.getElementById('clk-reset').addEventListener('click', function(){ clearInterval(timer); timer = null; left = total; clk.textContent = fmt(left); go.textContent = 'Iniciar'; });
+
+  /* ---------- laboratorio ---------- */
+  var FUN = [
+    { tex:'\\(f(x)=x^3-3x^2-9x+5\\)', x0:-3, x1:5.5, y0:-30, y1:34,
+      f:function(x){return x*x*x-3*x*x-9*x+5;}, d:function(x){return 3*x*x-6*x-9;}, dd:function(x){return 6*x-6;},
+      crit:[{x:-1,l:'x = −1'},{x:3,l:'x = 3'}] },
+    { tex:'\\(f(x)=x^{2/3}(x-5)\\)', x0:-2, x1:7, y0:-13, y1:9,
+      f:function(x){return Math.cbrt(x*x)*(x-5);}, d:function(x){ if (Math.abs(x)<1e-9) return NaN; return 5*(x-2)/(3*Math.cbrt(x)); },
+      dd:function(x){ if (Math.abs(x)<1e-9) return NaN; return 10*(x+1)/(9*Math.pow(Math.cbrt(x),4)); },
+      crit:[{x:0,l:'x = 0 (pico)'},{x:2,l:'x = 2'}] }
+  ];
+  var cur = 0, cv = document.getElementById('lab-cv'), ctx = cv.getContext('2d'), sl = document.getElementById('lab-x');
+  function col(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#888'; }
+  function xval(){ var F = FUN[cur], x = F.x0 + (F.x1-F.x0)*sl.value/1000, tol = (F.x1-F.x0)/1000; F.crit.forEach(function(c){ if (Math.abs(x-c.x) < tol) x = c.x; }); return x; }
+  function fmtn(v){ if (!isFinite(v)) return 'no existe'; var s = (Math.abs(v)<0.005?0:v).toFixed(2); return s.replace('-','−'); }
+  function draw(){
+    var F = FUN[cur], dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+    cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    var pad = 18;
+    function X(x){ return pad + (x-F.x0)/(F.x1-F.x0)*(W-2*pad); }
+    function Y(y){ return H-pad - (y-F.y0)/(F.y1-F.y0)*(H-2*pad); }
+    ctx.clearRect(0,0,W,H);
+    // cuadrícula
+    ctx.strokeStyle = col('--rule'); ctx.lineWidth = 1; ctx.globalAlpha = .55;
+    for (var gx = Math.ceil(F.x0); gx <= F.x1; gx++) { ctx.beginPath(); ctx.moveTo(X(gx),pad); ctx.lineTo(X(gx),H-pad); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+    // ejes
+    ctx.strokeStyle = col('--ink-3'); ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(pad,Y(0)); ctx.lineTo(W-pad,Y(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(X(0),pad); ctx.lineTo(X(0),H-pad); ctx.stroke();
+    ctx.fillStyle = col('--ink-3'); ctx.font = '11px ' + col('--f-mono');
+    for (var tx = Math.ceil(F.x0); tx <= F.x1; tx++) { if (tx===0) continue; ctx.fillText(String(tx).replace('-','−'), X(tx)-4, Y(0)+14); }
+    // curva coloreada por signo de f'
+    var N = 400, gr = col('--green'), rd = col('--red');
+    ctx.lineWidth = 3; ctx.lineCap = 'round';
+    for (var i = 0; i < N; i++) {
+      var a = F.x0 + (F.x1-F.x0)*i/N, b = F.x0 + (F.x1-F.x0)*(i+1)/N, m = F.d((a+b)/2);
+      ctx.strokeStyle = m >= 0 ? gr : rd;
+      ctx.beginPath(); ctx.moveTo(X(a),Y(F.f(a))); ctx.lineTo(X(b),Y(F.f(b))); ctx.stroke();
+    }
+    // críticos
+    F.crit.forEach(function(c){ ctx.fillStyle = col('--blue'); ctx.beginPath(); ctx.arc(X(c.x),Y(F.f(c.x)),4.5,0,7); ctx.fill(); });
+    // tangente
+    var x = xval(), y = F.f(x), s = F.d(x);
+    ctx.save(); ctx.beginPath(); ctx.rect(pad,pad,W-2*pad,H-2*pad); ctx.clip();
+    ctx.strokeStyle = col('--blue'); ctx.lineWidth = 2; ctx.setLineDash([6,5]);
+    if (isFinite(s)) {
+      var span = (F.x1-F.x0)*0.16;
+      ctx.beginPath(); ctx.moveTo(X(x-span),Y(y-s*span)); ctx.lineTo(X(x+span),Y(y+s*span)); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.moveTo(X(x),Y(y)-60); ctx.lineTo(X(x),Y(y)+60); ctx.stroke();
+    }
+    ctx.restore(); ctx.setLineDash([]);
+    ctx.fillStyle = col('--panel'); ctx.strokeStyle = col('--blue'); ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.arc(X(x),Y(y),6.5,0,7); ctx.fill(); ctx.stroke();
+    // lecturas
+    document.getElementById('r-x').textContent = fmtn(x);
+    document.getElementById('r-f').textContent = fmtn(y);
+    document.getElementById('r-d').textContent = fmtn(s);
+    document.getElementById('r-dd').textContent = fmtn(F.dd(x));
+    var st = document.getElementById('r-s'), dd = F.dd(x);
+    if (!isFinite(s)) { st.textContent = 'f′ no existe: punto crítico (pico)'; st.style.color = col('--blue'); }
+    else if (Math.abs(s) < 0.05) { st.textContent = 'Tangente horizontal: ' + (dd < 0 ? 'máximo (f″<0)' : dd > 0 ? 'mínimo (f″>0)' : 'punto crítico'); st.style.color = col('--blue'); }
+    else if (s > 0) { st.textContent = 'Crece ↗ (f′>0)'; st.style.color = col('--green'); }
+    else { st.textContent = 'Decrece ↘ (f′<0)'; st.style.color = col('--red'); }
+  }
+  function buildJump(){
+    var j = document.getElementById('lab-jump'); j.innerHTML = 'Ir a punto crítico:';
+    FUN[cur].crit.forEach(function(c){
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = c.l;
+      b.addEventListener('click', function(){ var F = FUN[cur]; sl.value = Math.round((c.x-F.x0)/(F.x1-F.x0)*1000); draw(); });
+      j.appendChild(b);
+    });
+  }
+  document.querySelectorAll('#lab .seg button').forEach(function(b){
+    b.addEventListener('click', function(){
+      cur = +b.getAttribute('data-f');
+      document.querySelectorAll('#lab .seg button').forEach(function(o){ o.setAttribute('aria-pressed', o === b); });
+      var t = document.getElementById('lab-title'); t.textContent = FUN[cur].tex;
+      if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([t]);
+      sl.value = cur === 0 ? 250 : 300; buildJump(); draw();
+    });
+  });
+  sl.addEventListener('input', draw);
+  window.addEventListener('resize', draw);
+  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw); } catch(e) {}
+  new MutationObserver(draw).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+  buildJump(); draw();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+})();
+</script>
+
+</body></html>
