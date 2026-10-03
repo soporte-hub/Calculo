@@ -1,9 +1,17 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>Aplicaciones de la Derivada</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap">
 <style>
+[hidden]{display:none!important}
+img{max-width:100%}
+
 /* Layout: cuaderno cuadriculado. Índice fijo a la izquierda (arriba en el teléfono), columna de lectura de ~70 caracteres.
    Azul de bolígrafo para lo importante, rojo de corrector para los errores, resaltador amarillo para fórmulas clave. */
 :root{
@@ -88,14 +96,14 @@ mjx-container{color:inherit}
 .hero h1{font-size:clamp(40px,7vw,72px);font-weight:800;letter-spacing:-.025em;line-height:.98;max-width:12ch}
 .hero .sub{font-size:19px;color:var(--ink-2);max-width:56ch;margin-top:18px}
 .hero-fig{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:end}
-.hero svg{width:100%;height:auto;max-width:300px}
-.hero svg .axis{stroke:var(--rule);stroke-width:1.5}
-.hero svg .curve{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
-.hero svg .tan{stroke:var(--blue);stroke-width:2;stroke-dasharray:5 4}
-.hero svg .dot{fill:var(--blue)}
-.hero svg .dot2{fill:var(--red)}
-.hero svg text{font-family:var(--f-hand);font-size:20px;fill:var(--blue)}
-.hero svg text.r{fill:var(--red)}
+.hero-art{width:100%;height:auto;max-width:300px}
+.hero-art .axis{stroke:var(--rule);stroke-width:1.5}
+.hero-art .curve{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.hero-art .tan{stroke:var(--blue);stroke-width:2;stroke-dasharray:5 4}
+.hero-art .dot{fill:var(--blue)}
+.hero-art .dot2{fill:var(--red)}
+.hero-art text{font-family:var(--f-hand);font-size:20px;fill:var(--blue)}
+.hero-art text.r{fill:var(--red)}
 
 .how{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:30px 0 8px;padding:0;list-style:none;counter-reset:how}
 .how li{margin:0;background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius);padding:14px 14px 14px;font-size:15px;line-height:1.45;counter-increment:how}
@@ -227,8 +235,8 @@ details.sol .body p{margin:6px 0}
 .cheat h4 .tag{font-weight:400}
 .cheat ul{margin:6px 0 0;padding-left:1.1em}
 .final{list-style:none;padding:0;display:grid;gap:8px}
-.final li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;margin:0}
-.final li::before{content:"☐";color:var(--blue);font-size:18px;line-height:1.4}
+.final li{position:relative;margin:0;padding-left:32px}
+.final li::before{content:"☐";position:absolute;left:0;top:0;color:var(--blue);font-size:18px;line-height:1.5}
 
 footer{max-width:760px;margin-top:60px;padding-top:20px;border-top:1px solid var(--rule);font-size:14px;color:var(--ink-3)}
 
@@ -247,7 +255,7 @@ footer{max-width:760px;margin-top:60px;padding-top:20px;border-top:1px solid var
   .prog small,.prog .bar,.prog .reset{display:none}
   .hero::before{inset:-28px -16px auto -16px}
   .hero-fig{grid-template-columns:minmax(0,1fr)}
-  .hero svg{max-width:260px}
+  .hero-art{max-width:260px}
   html{scroll-padding-top:64px}
 }
 @media (max-width: 560px){
@@ -260,7 +268,8 @@ footer{max-width:760px;margin-top:60px;padding-top:20px;border-top:1px solid var
   .steps > li{grid-template-columns:24px minmax(0,1fr);gap:8px}
 }
 </style>
-
+</head>
+<body>
 <div class="shell">
   <aside class="toc" aria-label="Índice">
     <div class="toc-brand">Cálculo para Administración · Cap. 3</div>
@@ -293,7 +302,7 @@ footer{max-width:760px;margin-top:60px;padding-top:20px;border-top:1px solid var
         <h1>Aplicaciones de la derivada</h1>
         <p class="sub">Todo el capítulo sale de una sola idea: <span class="hl">la derivada mide qué tan rápido cambia algo</span>. Con eso se calcula el costo de la siguiente unidad, se resuelven límites raros, se sabe dónde una función sube o baja y se encuentra el precio que deja más ganancia.</p>
       </div>
-      <svg viewBox="-6 -6 372 212" role="img" aria-label="Curva con un máximo y un mínimo; en la cima la tangente es horizontal">
+      <svg class="hero-art" viewBox="-6 -6 372 212" role="img" aria-label="Curva con un máximo y un mínimo; en la cima la tangente es horizontal">
         <line class="axis" x1="0" y1="76.2" x2="360" y2="76.2"/>
         <path class="curve" d="M0.0,97.6 L4.5,87.9 L9.0,79.1 L13.5,71.0 L18.0,63.7 L22.5,57.2 L27.0,51.4 L31.5,46.3 L36.0,42.0 L40.5,38.2 L45.0,35.2 L49.5,32.7 L54.0,30.8 L58.5,29.5 L63.0,28.8 L67.5,28.6 L72.0,28.9 L76.5,29.6 L81.0,30.8 L85.5,32.5 L90.0,34.5 L94.5,36.9 L99.0,39.7 L103.5,42.9 L108.0,46.3 L112.5,50.0 L117.0,54.0 L121.5,58.2 L126.0,62.7 L130.5,67.3 L135.0,72.2 L139.5,77.1 L144.0,82.2 L148.5,87.4 L153.0,92.7 L157.5,98.0 L162.0,103.3 L166.5,108.7 L171.0,114.0 L175.5,119.3 L180.0,124.6 L184.5,129.7 L189.0,134.7 L193.5,139.6 L198.0,144.4 L202.5,148.9 L207.0,153.3 L211.5,157.4 L216.0,161.3 L220.5,164.9 L225.0,168.2 L229.5,171.1 L234.0,173.8 L238.5,176.0 L243.0,177.9 L247.5,179.3 L252.0,180.3 L256.5,180.9 L261.0,180.9 L265.5,180.4 L270.0,179.5 L274.5,177.9 L279.0,175.8 L283.5,173.0 L288.0,169.6 L292.5,165.6 L297.0,160.9 L301.5,155.5 L306.0,149.4 L310.5,142.5 L315.0,134.9 L319.5,126.4 L324.0,117.2 L328.5,107.1 L333.0,96.1 L337.5,84.3 L342.0,71.5 L346.5,57.8 L351.0,43.1 L355.5,27.5 L360.0,10.9"/>
         <line class="tan" x1="20" y1="28.6" x2="115" y2="28.6"/>
@@ -1502,4 +1511,5 @@ window.MathJax = {
 })();
 </script>
 
-</body></html>
+</body>
+</html>
